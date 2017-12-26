@@ -50,4 +50,5 @@ void Game::UpdateModel(float dt)
 
 void Game::ComposeFrame()
 {
+	brd.Draw(gfx);
 }

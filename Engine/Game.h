@@ -28,6 +28,7 @@
 #include "Animation.h"
 #include "Character.h"
 #include "Font.h"
+#include "Board.h"
 
 class Game
 {
@@ -49,5 +50,6 @@ private:
 	/********************************/
 	/*  User Variables              */
 	Font font = Font("Consolas13x24.bmp");
+	Board brd = Board(gfx.GetRectI());
 	/********************************/
 };

@@ -16,6 +16,9 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{8b6c92a8-f65d-451e-80e3-d65773602b92}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\NewFilter1">
+      <UniqueIdentifier>{49455f21-c0ed-4362-a35e-1ac08b1961ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChiliWin.h">
@@ -81,6 +84,12 @@
     <ClInclude Include="SpriteEffect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Board.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Cell.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DXErr.cpp">
@@ -123,6 +132,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Font.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Board.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Cell.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
