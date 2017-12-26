@@ -325,9 +325,21 @@ void Graphics::PutPixel( int x,int y,Color c )
 	pSysBuffer[Graphics::ScreenWidth * y + x] = c;
 }
 
+void Graphics::DrawRect(const RectI & rect, Color c)
+{
+	RectI clipped = rect.ClippedTo(GetRectI());
+	for (int x = clipped.left; x <= clipped.right; x++)
+	{
+		for (int y = clipped.top; y <= clipped.bottom; y++)
+		{
+			PutPixel(x, y, c);
+		}
+	}
+}
+
 RectI Graphics::GetRectI()
 {
-	return RectI(0,ScreenWidth,0,ScreenHeight);
+	return RectI(0, ScreenWidth - 1, 0, ScreenHeight - 1);
 }
 
 

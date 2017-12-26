@@ -71,7 +71,7 @@ public:
 	template <typename E>
 	void DrawSprite(int xScreen, int yScreen, const RectI & srcRect, const Surface & surface, E effect)
 	{
-		DrawSprite(xScreen, yScreen, srcRect, GetRectI(), surface, effect);
+		DrawSprite(xScreen, yScreen, srcRect, RectI(0, ScreenWidth, 0, ScreenHeight), surface, effect);
 	}
 
 	template <typename E>
@@ -110,6 +110,8 @@ public:
 			}
 		}
 	}
+	
+	void DrawRect(const RectI& rect, Color c);
 
 	static RectI GetRectI();
 	~Graphics();

@@ -1,5 +1,6 @@
 #pragma once
 #include "Vec2.h"
+#include <algorithm>
 
 template<typename T>
 class Rect_
@@ -26,6 +27,17 @@ public:
 		Rect_(topLeft, topLeft + Vec2_<T>(width, height))
 	{
 	}
+	
+	 template<typename S>
+	 explicit Rect_(const Rect_<S>& src)
+		 :
+		 left((T)src.left),
+		 right((T)src.right),
+		 top((T)src.top),
+		 bottom((T)src.bottom)
+	 {
+	 }
+
 
 	bool  IsOverlappingWith(const Rect_& other) const
 	{
@@ -44,7 +56,7 @@ public:
 		return poT.x >= left && poT.x < right && poT.y >= top && poT.y < bottom;
 	}
 
-	Rect_  FromCenter(const Vec2_<T> & center, T halfWidth, T halfHeight)
+	static Rect_  FromCenter(const Vec2_<T> & center, T halfWidth, T halfHeight)
 	{
 		const Vec2_<T> half(halfWidth, halfHeight);
 		return Rect_(center - half, center + half);
@@ -53,6 +65,22 @@ public:
 	Rect_  GetExpanded(T offset) const
 	{
 		return Rect_(left - offset, right + offset, top - offset, bottom + offset);
+	}
+
+	Rect_ ClippedTo(const Rect_<T>& other) const
+	{
+		return
+		{
+			std::max(left, other.left),
+			std::min(right, other.right),
+			std::max(top, other.top),
+			std::min(bottom, other.bottom)
+		};
+	}
+
+	void ClipTo(const Rect_<T>& other)
+	{
+		*this = *this->ClippedTo(other);
 	}
 
 	Vec2_<T>  GetCenter() const
