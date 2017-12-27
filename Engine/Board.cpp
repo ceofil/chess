@@ -2,8 +2,8 @@
 
 Board::Board(RectI rect)
 {
-	const int cellWidth = rect.GetWidth() / width;
-	const int cellHeight = rect.GetHeight() / height;
+	const int cellWidth = (rect.GetWidth() + 1) / width;
+	const int cellHeight = (rect.GetHeight() + 1) / height;
 	for (int x = 0; x < width; x++)
 	{
 		for (int y = 0; y < height; y++)
