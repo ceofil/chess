@@ -13,5 +13,21 @@ void Cell::Draw(Graphics & gfx, Color c) const
 
 bool Cell::IsOccupied() const
 {
-	return occupied;
+	return !(piece == nullptr);
 }
+
+void Cell::SetPiece(Piece * ptr)
+{
+	piece = ptr;
+}
+
+Piece * const Cell::GetPiece() const
+{
+	return piece;
+}
+
+RectI Cell::GetRect() const
+{
+	return rect;
+}
+

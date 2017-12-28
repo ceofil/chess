@@ -5,17 +5,37 @@
 #include "Surface.h"
 #include "SpriteEffect.h"
 
+enum class PieceType
+{
+	Queen,
+	King,
+	Rook,
+	Knight,
+	Bishop,
+	Pawn
+};
+
+enum class PieceColor
+{
+	White,
+	Black
+};
+
 class Piece
 {
 public:
 	Piece() = default;
-	Piece(RectI whiteRect, RectI blackRect, int side);
+	Piece(PieceColor side, PieceType type, RectI whiteRect, RectI blackRect );
 	void Draw(Vei2 pos, const Surface& surface, Graphics& gfx) const;
+	PieceType GetType() const;
+	PieceColor GetColor() const;
 	//virtual std::vector<Vei2> possibleMoves(const class Board& brd) const = 0;
 
 private:
-	RectI rect[2];
-	int side; //0 for white, 1 for black
+	PieceColor clr;
+	PieceType type;
+	RectI rect[2]; //0 for white, 1 for black
+
 
 
 public:
@@ -25,35 +45,35 @@ public:
 class Queen : public Piece
 {
 public:
-	Queen(int side);
+	Queen(PieceColor clr);
 };
 
 class King : public Piece
 {
 public:
-	King(int side);
+	King(PieceColor clr);
 };
 
 class Rook : public Piece //tura
 {
 public:
-	Rook(int side);
+	Rook(PieceColor clr);
 };
 
 class Knight : public Piece
 {
 public:
-	Knight(int side);
+	Knight(PieceColor clr);
 };
 
 class Bishop : public Piece //nebun
 {
 public:
-	Bishop(int side);
+	Bishop(PieceColor clr);
 };
 
 class Pawn : public Piece 
 {
 public:
-	Pawn(int side);
+	Pawn(PieceColor clr);
 };

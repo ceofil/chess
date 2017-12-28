@@ -50,6 +50,6 @@ private:
 	/********************************/
 	/*  User Variables              */
 	Font font = Font("Consolas13x24.bmp");
-	Board brd = Board(gfx.GetRectI());
+	Board brd = Board(RectI(0,600,0,600));//gfx.GetRectI());
 	/********************************/
 };

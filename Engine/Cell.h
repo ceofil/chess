@@ -1,6 +1,7 @@
 #pragma once
 #include "Rect.h"
 #include "Graphics.h"
+#include "Piece.h"
 
 class Cell
 {
@@ -9,7 +10,13 @@ public:
 	Cell(RectI rect);
 	void Draw(Graphics& gfx, Color c) const;
 	bool IsOccupied() const;
+	void SetPiece(Piece* ptr);
+	Piece* const GetPiece() const;
+	RectI GetRect() const;
+
 private:
-	bool occupied = false;
 	RectI rect;
+
+private:
+	Piece* piece = nullptr;
 };
