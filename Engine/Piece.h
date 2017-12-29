@@ -4,18 +4,9 @@
 #include "Graphics.h"
 #include "Surface.h"
 #include "SpriteEffect.h"
+#include <vector>
 
-enum class PieceType
-{
-	Queen,
-	King,
-	Rook,
-	Knight,
-	Bishop,
-	Pawn
-};
-
-enum class PieceColor
+enum class Side
 {
 	White,
 	Black
@@ -25,15 +16,14 @@ class Piece
 {
 public:
 	Piece() = default;
-	Piece(PieceColor side, PieceType type, RectI whiteRect, RectI blackRect );
+	Piece(Side side, RectI whiteRectSprite, RectI blackRectSprite, bool isKing = false );
 	void Draw(Vei2 pos, const Surface& surface, Graphics& gfx) const;
-	PieceType GetType() const;
-	PieceColor GetColor() const;
-	//virtual std::vector<Vei2> possibleMoves(const class Board& brd) const = 0;
+	Side GetSide() const;
+	//virtual std::vector<Vei2> possibleMoves(std::vector<std::vector<Piece*>>) const = 0;
 
 private:
-	PieceColor clr;
-	PieceType type;
+	Side side;
+	bool isKing;
 	RectI rect[2]; //0 for white, 1 for black
 
 
@@ -45,35 +35,35 @@ public:
 class Queen : public Piece
 {
 public:
-	Queen(PieceColor clr);
+	Queen(Side side);
 };
 
 class King : public Piece
 {
 public:
-	King(PieceColor clr);
+	King(Side side);
 };
 
 class Rook : public Piece //tura
 {
 public:
-	Rook(PieceColor clr);
+	Rook(Side side);
 };
 
 class Knight : public Piece
 {
 public:
-	Knight(PieceColor clr);
+	Knight(Side side);
 };
 
 class Bishop : public Piece //nebun
 {
 public:
-	Bishop(PieceColor clr);
+	Bishop(Side side);
 };
 
 class Pawn : public Piece 
 {
 public:
-	Pawn(PieceColor clr);
+	Pawn(Side side);
 };

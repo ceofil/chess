@@ -1,62 +1,56 @@
 #include "Piece.h"
 
-
-Piece::Piece(PieceColor clr, PieceType type, RectI whiteRect, RectI blackRect)
+Piece::Piece(Side side, RectI whiteRectSprite, RectI blackRectSprite, bool isKing)
 	:
-	clr(clr),
-	type(type)
+	side(side),
+	isKing(isKing)
 {
-	rect[(int)PieceColor::White] = whiteRect;
-	rect[(int)PieceColor::Black] = blackRect;
+		rect[(int)Side::White] = whiteRectSprite;
+		rect[(int)Side::Black] = blackRectSprite;
 }
 
 void Piece::Draw(Vei2 pos, const Surface& surface, Graphics & gfx) const
 {
-	gfx.DrawSprite(pos.x, pos.y, rect[(int)clr], surface, SpriteEffect::Chroma{ Colors::Magenta });
+	gfx.DrawSprite(pos.x, pos.y, rect[(int)side], surface, SpriteEffect::Chroma{ Colors::Magenta });
 }
 
-PieceType Piece::GetType() const
+Side Piece::GetSide() const
 {
-	return type;
+	return side;
 }
 
-PieceColor Piece::GetColor() const
-{
-	return clr;
-}
-
-King::King(PieceColor clr)
+King::King(Side side)
 	:
-	Piece(clr, PieceType::King, RectI(size, 2 * size, 0, size), RectI(size, 2 * size, size, 2 * size))
+	Piece(side, RectI(size, 2 * size, 0, size), RectI(size, 2 * size, size, 2 * size), true)
 {
 }
 
-Queen::Queen(PieceColor clr)
+Queen::Queen(Side side)
 	:
-	Piece(clr, PieceType::Queen, RectI(0, size, 0, size), RectI(0, size, size, 2 * size))
+	Piece(side, RectI(0, size, 0, size), RectI(0, size, size, 2 * size))
 {
 }
 
-Rook::Rook(PieceColor clr)
+Rook::Rook(Side side)
 	:
-	Piece(clr, PieceType::Rook, RectI(2 * size, 3 * size, 0, size), RectI(2 * size, 3 * size, size, 2 * size))
+	Piece(side, RectI(2 * size, 3 * size, 0, size), RectI(2 * size, 3 * size, size, 2 * size))
 {
 }
 
-Knight::Knight(PieceColor clr)
+Knight::Knight(Side side)
 	:
-	Piece(clr, PieceType::Knight, RectI(3 * size, 4 * size, 0, size), RectI(3 * size, 4 * size, size, 2 * size))
+	Piece(side, RectI(3 * size, 4 * size, 0, size), RectI(3 * size, 4 * size, size, 2 * size))
 {
 }
 
-Bishop::Bishop(PieceColor clr)
+Bishop::Bishop(Side side)
 	:
-	Piece(clr, PieceType::Bishop, RectI(4 * size, 5 * size, 0, size), RectI(4 * size, 5 * size, size, 2 * size))
+	Piece(side, RectI(4 * size, 5 * size, 0, size), RectI(4 * size, 5 * size, size, 2 * size))
 {
 }
 
-Pawn::Pawn(PieceColor clr)
+Pawn::Pawn(Side side)
 	:
-	Piece(clr, PieceType::Pawn, RectI(5 * size, 6 * size, 0, size), RectI(5 * size, 6 * size, size, 2 * size))
+	Piece(side, RectI(5 * size, 6 * size, 0, size), RectI(5 * size, 6 * size, size, 2 * size))
 {
 }
