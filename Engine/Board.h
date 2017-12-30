@@ -5,6 +5,7 @@
 #include "SpriteEffect.h"
 #include "Piece.h"
 #include <vector>
+#include "PieceManager.h"
 
 class Board
 {
@@ -23,5 +24,5 @@ private:
 	const Color clr[2] = { Color(240,217,181),Color(181,136,99) };
 
 private:
-	std::vector<std::vector<Piece*>> pieces = std::vector< std::vector<Piece*>>( 8, std::vector<Piece*>(8, nullptr));
+	PieceManager table;
 };

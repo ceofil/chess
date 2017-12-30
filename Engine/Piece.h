@@ -17,6 +17,7 @@ class Piece
 public:
 	Piece() = default;
 	Piece(Side side, RectI whiteRectSprite, RectI blackRectSprite, bool isKing = false );
+	virtual ~Piece() = default;
 	void Draw(Vei2 pos, const Surface& surface, Graphics& gfx) const;
 	Side GetSide() const;
 	//virtual std::vector<Vei2> possibleMoves(std::vector<std::vector<Piece*>>) const = 0;
