@@ -41,9 +41,10 @@ void Board::Draw(Graphics & gfx) const
 	{
 		for (int y = 0; y < 8; y++)
 		{
-			if (table.pieces[y][x])
+			
+			if (table.GetPiece({x,y}))
 			{
-				table.pieces[y][x]->Draw(pieceScreenPos(x, y), sprite, gfx);
+				table.GetPiece({ x,y })->Draw(pieceScreenPos(x, y), sprite, gfx);
 			}
 		}
 	}
@@ -63,7 +64,7 @@ void Board::HandleMousePressed(Vei2 screenPos)
 		{
 		case GameState::Waiting:
 		{
-			if (table.pieces[row][col])
+			if (table.GetPiece({ col,row }))
 			{
 				selectedPiece = Vei2(col, row);
 				state = GameState::PieceSelected;
@@ -102,17 +103,17 @@ void Board::InitializePieces()
 {
 	for (int i = 0; i <= 1; i++)
 	{
-		table.pieces[i * 7][0] = new Rook((Side)i);
-		table.pieces[i * 7][1] = new Knight((Side)i);
-		table.pieces[i * 7][2] = new Bishop((Side)i);
-		table.pieces[i * 7][3] = new King((Side)i);
-		table.pieces[i * 7][4] = new Queen((Side)i);
-		table.pieces[i * 7][5] = new Bishop((Side)i);
-		table.pieces[i * 7][6] = new Knight((Side)i);
-		table.pieces[i * 7][7] = new Rook((Side)i);
+		table.SetPiece(0, i * 7, new Rook((Side)i));
+		table.SetPiece(1, i * 7, new Knight((Side)i));
+		table.SetPiece(2, i * 7, new Bishop((Side)i));
+		table.SetPiece(3, i * 7, new King((Side)i));
+		table.SetPiece(4, i * 7, new Queen((Side)i));
+		table.SetPiece(5, i * 7, new Bishop((Side)i));
+		table.SetPiece(6, i * 7, new Knight((Side)i));
+		table.SetPiece(7, i * 7, new Rook((Side)i));
 		for (int j = 0; j < 8; j++)
 		{
-			table.pieces[1 + i * 5][j] = new Pawn((Side)i);
+			table.SetPiece( j, 1 + i * 5 , new Pawn((Side)i));
 		}
 	}
 }
