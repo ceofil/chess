@@ -54,10 +54,11 @@ PieceManager::~PieceManager()
 
 void PieceManager::SetPiece(Vei2 brdPos, Piece * ptr)
 {
+	assert(ptr);
 	Piece*& p = pieceAt(brdPos);
-	if (pieceAt(brdPos) != nullptr)
+	if (p)
 	{
-		RemovePiece(brdPos);
+		delete p;
 	}
 	p = ptr;
 }
@@ -69,13 +70,20 @@ void PieceManager::SetPiece(int x, int y, Piece * ptr)
 
 void PieceManager::Transfer(Vei2 giverPos, Vei2 receiverPos)
 {
-	SetPiece(receiverPos, pieceAt(giverPos));
-	RemovePiece(giverPos);
+	Piece*& receiver = pieceAt(receiverPos);
+	Piece*& giver = pieceAt(giverPos);
+	SetPiece(receiverPos, giver);
+	pieceAt(giverPos) = nullptr;
 }
 
 const Piece * const PieceManager::GetPiece(Vei2 brdPos) const
 {
 	return pieces[brdPos.y * 8 + brdPos.x];
+}
+
+const Piece * const PieceManager::GetSelectedPiece() const
+{
+	return GetPiece(selectedPiecePos);
 }
 
 bool PieceManager::Contains(int x, int y) const
@@ -86,16 +94,6 @@ bool PieceManager::Contains(int x, int y) const
 bool PieceManager::Contains(Vei2 brdPos) const
 {
 	return Contains(brdPos.x,brdPos.y);
-}
-
-void PieceManager::RemovePiece(Vei2 brdPos)
-{
-	Piece*& p = pieceAt(brdPos);
-	if (p != nullptr)
-	{
-		delete p;
-	}
-	p = nullptr;
 }
 
 Piece *& PieceManager::pieceAt(int x, int y)

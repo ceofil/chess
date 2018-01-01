@@ -45,10 +45,10 @@ void Board::Draw(Graphics & gfx) const
 
 	if (state == GameState::PieceSelected)
 	{
-		CellAt(selectedPiecePos).DrawHighlight(gfx, Color(20, 190, 20));
-		for (Vei2 pos : table.GetPiece(selectedPiecePos)->possibleMoves(table, selectedPiecePos))
+		CellAt(table.selectedPiecePos).DrawHighlight(gfx, highlightClr);
+		for (Vei2 pos : table.GetPiece(table.selectedPiecePos)->possibleMoves(table, table.selectedPiecePos))
 		{
-			CellAt(pos).DrawMark(gfx, Color(20, 140, 20));
+			CellAt(pos).DrawMark(gfx, highlightClr);
 		}
 	}
 }
@@ -67,23 +67,42 @@ void Board::HandleMousePressed(Vei2 screenPos)
 		{
 		case GameState::Waiting:
 		{
-			if (table.GetPiece({ col,row }))
+			if (table.GetPiece(brdPos))
 			{
-				selectedPiecePos = Vei2(col, row);
+				table.selectedPiecePos = brdPos;
 				state = GameState::PieceSelected;
 			}
 			break;
 		}
 		case GameState::PieceSelected:
 		{
-			if (selectedPiecePos == brdPos)
+			if (table.selectedPiecePos == brdPos)
 			{
+				state = GameState::Waiting;
+			}
+			else
+			{
+				auto p = table.GetPiece(brdPos);
+				if (p)
+				{
+					if (p->GetSide() != table.GetSelectedPiece()->GetSide())
+					{
+						table.Transfer(table.selectedPiecePos, brdPos);
+					}
+				}
+				else
+				{
+					table.Transfer(table.selectedPiecePos, brdPos);
+				}
 				state = GameState::Waiting;
 			}
 			break;
 		}
 		}
-
+	}
+	else
+	{
+		state = GameState::Waiting;
 	}
 }
 

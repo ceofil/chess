@@ -28,6 +28,7 @@ private:
 private:
 	Surface sprite = Surface("Sprites\\ChessPiecesArray320x120.bmp");
 	const Color clr[2] = { Color(240,217,181),Color(181,136,99) };
+	const Color highlightClr = Color(20, 140, 20);
 
 private:
 	PieceManager table;
@@ -40,5 +41,4 @@ private:
 		PieceSelected
 	};
 	GameState state = GameState::Waiting;
-	Vei2 selectedPiecePos = { -1,-1 };
 };
