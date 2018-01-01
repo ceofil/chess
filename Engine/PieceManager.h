@@ -12,12 +12,8 @@ public:
 	void SetPiece(int x, int y, Piece* ptr);
 	void Transfer(Vei2 giverPos, Vei2 receiverPos);
 	const Piece * const GetPiece(Vei2 brdPos) const;
-	const Piece * const GetSelectedPiece() const;
 	bool Contains(int x, int y) const;
 	bool Contains(Vei2 brdPos) const;
-
-public:
-	Vei2 selectedPiecePos;
 
 private:
 	Piece*& pieceAt(int x, int y);

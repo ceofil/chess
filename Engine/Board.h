@@ -41,4 +41,11 @@ private:
 		PieceSelected
 	};
 	GameState state = GameState::Waiting;
+	struct Selected
+	{
+		Vei2 pos;
+		std::vector<Vei2> validMoves;
+	};
+	Selected selectedPiece;
 };
+

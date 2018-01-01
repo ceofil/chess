@@ -45,8 +45,8 @@ void Board::Draw(Graphics & gfx) const
 
 	if (state == GameState::PieceSelected)
 	{
-		CellAt(table.selectedPiecePos).DrawHighlight(gfx, highlightClr);
-		for (Vei2 pos : table.GetPiece(table.selectedPiecePos)->possibleMoves(table, table.selectedPiecePos))
+		CellAt(selectedPiece.pos).DrawHighlight(gfx, highlightClr);
+		for (Vei2 pos : selectedPiece.validMoves)
 		{
 			CellAt(pos).DrawMark(gfx, highlightClr);
 		}
@@ -62,39 +62,46 @@ void Board::HandleMousePressed(Vei2 screenPos)
 		const int row = screenPos.y / cellSize;
 		const int col = screenPos.x / cellSize;
 		Vei2 brdPos = Vei2(col, row);
+		auto p = table.GetPiece(brdPos);
 
 		switch (state)
 		{
 		case GameState::Waiting:
 		{
-			if (table.GetPiece(brdPos))
+			if (p)
 			{
-				table.selectedPiecePos = brdPos;
+				selectedPiece.validMoves = p->possibleMoves(table, brdPos);
+				selectedPiece.pos = brdPos;
 				state = GameState::PieceSelected;
 			}
 			break;
 		}
 		case GameState::PieceSelected:
 		{
-			if (table.selectedPiecePos == brdPos)
+			if (selectedPiece.pos == brdPos)
 			{
 				state = GameState::Waiting;
 			}
 			else
 			{
-				auto p = table.GetPiece(brdPos);
 				if (p)
 				{
-					if (p->GetSide() != table.GetSelectedPiece()->GetSide())
+					if (p->GetSide() == table.GetPiece(selectedPiece.pos)->GetSide())
 					{
-						table.Transfer(table.selectedPiecePos, brdPos);
+						selectedPiece.validMoves = p->possibleMoves(table, brdPos);
+						selectedPiece.pos = brdPos;
+					}
+					else
+					{
+						table.Transfer(selectedPiece.pos, brdPos);
+						state = GameState::Waiting;
 					}
 				}
 				else
 				{
-					table.Transfer(table.selectedPiecePos, brdPos);
+					table.Transfer(selectedPiece.pos, brdPos);
+					state = GameState::Waiting;
 				}
-				state = GameState::Waiting;
 			}
 			break;
 		}
@@ -143,6 +150,5 @@ void Board::InitializePieces()
 			table.SetPiece( j, 1 + i * 5 , new Pawn((Side)i));
 		}
 	}
-	table.SetPiece(4, 4, new Queen(Side::Black));
 }
 

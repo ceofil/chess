@@ -82,11 +82,6 @@ const Piece * const PieceManager::GetPiece(Vei2 brdPos) const
 	return pieces[brdPos.y * 8 + brdPos.x];
 }
 
-const Piece * const PieceManager::GetSelectedPiece() const
-{
-	return GetPiece(selectedPiecePos);
-}
-
 bool PieceManager::Contains(int x, int y) const
 {
 	return x >= 0 && y >= 0 && x < 8 && y < 8;
