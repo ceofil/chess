@@ -14,12 +14,10 @@ public:
 	const Piece * const  GetPiece(Vei2 brdPos) const; 
 
 private:
+	Piece*& pieceAt(int x, int y);
 	Piece*& pieceAt(Vei2 brdPos);
 	void RemovePiece(Vei2 brdPos);
 
-
-	//can't auto this for some reason
 private:
-	std::vector<std::vector<Piece*>> pieces = \
-	std::vector<std::vector<Piece*>>(8, std::vector<Piece*>(8, nullptr));
+	std::vector<Piece*> pieces = std::vector<Piece*>(64, nullptr);
 };

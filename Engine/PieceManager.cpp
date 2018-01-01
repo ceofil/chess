@@ -1,58 +1,47 @@
 #include "PieceManager.h"
+#include <algorithm>
 
 PieceManager::PieceManager(const PieceManager & other)
 {
-	for (int i = 0; i < 8; i++)
+	std::transform(other.pieces.begin(),other.pieces.end(),pieces.begin(),
+	[](Piece* p)
 	{
-		for (int j = 0; j < 8; j++)
-		{
-			if (other.pieces[i][j])
-			{
-				pieces[i][j] = new Piece(*(other.pieces[i][j]));
-			}
-		}
-	}
+		return new Piece(*p);
+	});
 }
 
 PieceManager & PieceManager::operator=(const PieceManager & other)
 {
-	for (int i = 0; i < 8; i++)
+	std::for_each(pieces.begin(), pieces.end(),
+	[](Piece*& p)
 	{
-		for (int j = 0; j < 8; j++)
+		if (p)
 		{
-			if (pieces[i][j])
-			{
-				delete pieces[i][j];
-				pieces[i][j] = nullptr;
-			}
+			delete p;
+			p = nullptr;
 		}
-	}
-	for (int i = 0; i < 8; i++)
+	});
+
+	std::transform(other.pieces.begin(), other.pieces.end(), pieces.begin(),
+	[](Piece* p)
 	{
-		for (int j = 0; j < 8; j++)
-		{
-			if (other.pieces[i][j])
-			{
-				pieces[i][j] = new Piece(*(other.pieces[i][j]));
-			}
-		}
-	}
+		return new Piece(*p);
+	});
+
 	return *this;
 }
 
 PieceManager::~PieceManager()
 {
-	for (int i = 0; i < 8; i++)
+	std::for_each(pieces.begin(), pieces.end(),
+	[](Piece*& p)
 	{
-		for (int j = 0; j < 8; j++)
+		if (p)
 		{
-			if (pieces[i][j])
-			{
-				delete pieces[i][j];
-				pieces[i][j] = nullptr;
-			}
+			delete p;
+			p = nullptr;
 		}
-	}
+	});
 }
 
 void PieceManager::SetPiece(Vei2 brdPos, Piece * ptr)
@@ -78,7 +67,7 @@ void PieceManager::Transfer(Vei2 giverPos, Vei2 receiverPos)
 
 const Piece * const PieceManager::GetPiece(Vei2 brdPos) const
 {
-	return pieces[brdPos.y][brdPos.x];
+	return pieces[brdPos.y * 8 + brdPos.x];
 }
 
 void PieceManager::RemovePiece(Vei2 brdPos)
@@ -91,7 +80,13 @@ void PieceManager::RemovePiece(Vei2 brdPos)
 	p = nullptr;
 }
 
+Piece *& PieceManager::pieceAt(int x, int y)
+{
+	assert(x >= 0 && y >= 0 && x < 8 && y < 8);
+	return pieces[y * 8 + x];
+}
+
 Piece*& PieceManager::pieceAt(Vei2 brdPos)
 {
-	return pieces[brdPos.y][brdPos.x];
+	return pieceAt(brdPos.x, brdPos.y);
 }
