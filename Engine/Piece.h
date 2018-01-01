@@ -45,6 +45,7 @@ class King : public Piece
 {
 public:
 	King(Side side);
+	std::vector<Vei2> possibleMoves(class PieceManager table, Vei2 pos) const override;
 };
 
 class Rook : public Piece //tura
@@ -57,12 +58,14 @@ class Knight : public Piece
 {
 public:
 	Knight(Side side);
+	std::vector<Vei2> possibleMoves(class PieceManager table, Vei2 pos) const override;
 };
 
 class Bishop : public Piece //nebun
 {
 public:
 	Bishop(Side side);
+	std::vector<Vei2> possibleMoves(class PieceManager table, Vei2 pos) const override;
 };
 
 class Pawn : public Piece 

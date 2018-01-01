@@ -78,6 +78,7 @@ void PieceManager::Transfer(Vei2 giverPos, Vei2 receiverPos)
 
 const Piece * const PieceManager::GetPiece(Vei2 brdPos) const
 {
+	assert(Contains(brdPos));
 	return pieces[brdPos.y * 8 + brdPos.x];
 }
 
