@@ -20,6 +20,7 @@ private:
 	RectI rect;
 	int cellSize;
 	Cell cells[64];
+	const Cell& CellAt(Vei2 brdPos) const;
 	const Cell& CellAt(int x, int y) const;
 	Cell& CellAt(int x, int y);
 	Vei2 pieceScreenPos(int x, int y) const;
@@ -39,5 +40,5 @@ private:
 		PieceSelected
 	};
 	GameState state = GameState::Waiting;
-	Vei2 selectedPiece = { -1,-1 };
+	Vei2 selectedPiecePos = { -1,-1 };
 };

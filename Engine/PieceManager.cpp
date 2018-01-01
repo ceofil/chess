@@ -4,9 +4,13 @@
 PieceManager::PieceManager(const PieceManager & other)
 {
 	std::transform(other.pieces.begin(),other.pieces.end(),pieces.begin(),
-	[](Piece* p)
+	[](Piece* p) -> Piece*
 	{
-		return new Piece(*p);
+		if(p)
+		{
+			return new Piece(*p);
+		}
+		else return nullptr;
 	});
 }
 
@@ -23,9 +27,13 @@ PieceManager & PieceManager::operator=(const PieceManager & other)
 	});
 
 	std::transform(other.pieces.begin(), other.pieces.end(), pieces.begin(),
-	[](Piece* p)
+	[](Piece* p) -> Piece*
 	{
-		return new Piece(*p);
+		if (p)
+		{
+			return new Piece(*p);
+		}
+		else return nullptr;
 	});
 
 	return *this;
@@ -70,6 +78,16 @@ const Piece * const PieceManager::GetPiece(Vei2 brdPos) const
 	return pieces[brdPos.y * 8 + brdPos.x];
 }
 
+bool PieceManager::Contains(int x, int y) const
+{
+	return x >= 0 && y >= 0 && x < 8 && y < 8;
+}
+
+bool PieceManager::Contains(Vei2 brdPos) const
+{
+	return Contains(brdPos.x,brdPos.y);
+}
+
 void PieceManager::RemovePiece(Vei2 brdPos)
 {
 	Piece*& p = pieceAt(brdPos);
@@ -82,7 +100,7 @@ void PieceManager::RemovePiece(Vei2 brdPos)
 
 Piece *& PieceManager::pieceAt(int x, int y)
 {
-	assert(x >= 0 && y >= 0 && x < 8 && y < 8);
+	assert(Contains(x,y));
 	return pieces[y * 8 + x];
 }
 

@@ -25,6 +25,7 @@
 #include <assert.h>
 #include <string>
 #include <array>
+#include <algorithm>
 
 // Ignore the intellisense error "cannot open source file" for .shh files.
 // They will be created during the build sequence before the preprocessor runs.
@@ -328,18 +329,52 @@ void Graphics::PutPixel( int x,int y,Color c )
 void Graphics::DrawRect(const RectI & rect, Color c)
 {
 	RectI clipped = rect.ClippedTo(GetRectI());
-	for (int x = clipped.left; x <= clipped.right; x++)
+	for (int x = clipped.left; x < clipped.right; x++)
 	{
-		for (int y = clipped.top; y <= clipped.bottom; y++)
+		for (int y = clipped.top; y < clipped.bottom; y++)
 		{
 			PutPixel(x, y, c);
 		}
 	}
 }
 
+void Graphics::DrawRectStroke(RectI rect, int stroke, Color c)
+{
+
+	RectI expanded = rect.GetExpanded(stroke);
+	if (stroke > 0)
+	{
+		std::swap(expanded, rect);
+	}
+	RectI topBlock = RectI({rect.left,rect.top}, {rect.right,expanded.top});
+	RectI bottomBlock = RectI({rect.left,expanded.bottom}, {rect.right,rect.bottom});
+	RectI leftBlock = RectI({rect.left,expanded.top}, {expanded.left,expanded.bottom});
+	RectI rightBlock = RectI({expanded.right,expanded.top}, {rect.right,expanded.bottom});
+	DrawRect(topBlock, c);
+	DrawRect(bottomBlock, c);
+	DrawRect(leftBlock, c);
+	DrawRect(rightBlock, c);
+}
+
+void Graphics::DrawCircle(const Vec2 & pos, float radius, Color c)
+{
+	float radiusSq = radius * radius;
+	for (float x = pos.x - radius; x < pos.x + radius; x += 1.0f)
+	{
+		for (float y = pos.y - radius; y < pos.y + radius; y += 1.0f)
+		{
+			Vec2 point(x, y);
+			if ((point - pos).GetLengthSq() <= radiusSq)
+			{
+				PutPixel(int(x), int(y), c);
+			}
+		}
+	}
+}
+
 RectI Graphics::GetRectI()
 {
-	return RectI(0, ScreenWidth - 1, 0, ScreenHeight - 1);
+	return RectI(0, ScreenWidth, 0, ScreenHeight);
 }
 
 

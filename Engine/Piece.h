@@ -20,7 +20,8 @@ public:
 	virtual ~Piece() = default;
 	void Draw(Vei2 pos, const Surface& surface, Graphics& gfx) const;
 	Side GetSide() const;
-	//virtual std::vector<Vei2> possibleMoves(std::vector<std::vector<Piece*>>) const = 0;
+	// this will be become abstract after I override it for all derived classes
+	virtual std::vector<Vei2> possibleMoves(class PieceManager table, Vei2 pos) const;
 
 private:
 	Side side;
@@ -37,6 +38,7 @@ class Queen : public Piece
 {
 public:
 	Queen(Side side);
+	std::vector<Vei2> possibleMoves(class PieceManager table, Vei2 pos) const override;
 };
 
 class King : public Piece

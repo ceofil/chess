@@ -112,6 +112,8 @@ public:
 	}
 	
 	void DrawRect(const RectI& rect, Color c);
+	void DrawRectStroke(RectI rect, int stroke, Color c);
+	void DrawCircle(const Vec2& pos, float radius, Color c);
 
 	static RectI GetRectI();
 	~Graphics();

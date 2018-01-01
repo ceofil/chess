@@ -31,21 +31,24 @@ void Board::Draw(Graphics & gfx) const
 			c.Draw(gfx, clr[(x + y) % 2]);
 		}
 	}
-
-	if (state == GameState::PieceSelected)
-	{
-		CellAt(selectedPiece.x, selectedPiece.y).Draw(gfx, Colors::Red);
-	}
 	
 	for (int x = 0; x < 8; x++)
 	{
 		for (int y = 0; y < 8; y++)
 		{
-			
 			if (table.GetPiece({x,y}))
 			{
 				table.GetPiece({ x,y })->Draw(pieceScreenPos(x, y), sprite, gfx);
 			}
+		}
+	}
+
+	if (state == GameState::PieceSelected)
+	{
+		CellAt(selectedPiecePos).DrawHighlight(gfx, Color(20, 190, 20));
+		for (Vei2 pos : table.GetPiece(selectedPiecePos)->possibleMoves(table, selectedPiecePos))
+		{
+			CellAt(pos).DrawMark(gfx, Color(20, 140, 20));
 		}
 	}
 }
@@ -66,14 +69,14 @@ void Board::HandleMousePressed(Vei2 screenPos)
 		{
 			if (table.GetPiece({ col,row }))
 			{
-				selectedPiece = Vei2(col, row);
+				selectedPiecePos = Vei2(col, row);
 				state = GameState::PieceSelected;
 			}
 			break;
 		}
 		case GameState::PieceSelected:
 		{
-			if (selectedPiece == brdPos)
+			if (selectedPiecePos == brdPos)
 			{
 				state = GameState::Waiting;
 			}
@@ -82,6 +85,11 @@ void Board::HandleMousePressed(Vei2 screenPos)
 		}
 
 	}
+}
+
+const Cell & Board::CellAt(Vei2 brdPos) const
+{
+	return CellAt(brdPos.x, brdPos.y);
 }
 
 const Cell & Board::CellAt(int x, int y) const
@@ -116,5 +124,6 @@ void Board::InitializePieces()
 			table.SetPiece( j, 1 + i * 5 , new Pawn((Side)i));
 		}
 	}
+	table.SetPiece(4, 4, new Queen(Side::Black));
 }
 
