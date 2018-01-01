@@ -106,6 +106,43 @@ Rook::Rook(Side side)
 {
 }
 
+std::vector<Vei2> Rook::possibleMoves(PieceManager table, Vei2 pos) const
+{
+	std::vector<Vei2> vec;
+	for (int i = -1; i <= 1; i += 2)
+	{
+		for (int n = 0; n <= 1; n++)
+		{
+			Vei2 delta;
+			if (n)
+			{
+				delta = { 0,i };
+			}
+			else
+			{
+				delta = { i,0 };
+			}
+			for (Vei2 mobile = pos + delta; table.Contains(mobile); mobile += delta)
+			{
+				const Piece* const p = table.GetPiece(mobile);
+				if (p)
+				{
+					if (p->GetSide() != GetSide())
+					{
+						vec.push_back(mobile);
+					}
+					break;
+				}
+				else
+				{
+					vec.push_back(mobile);
+				}
+			}
+		}
+	}
+	return vec;
+}
+
 Knight::Knight(Side side)
 	:
 	Piece(side, RectI(3 * size, 4 * size, 0, size), RectI(3 * size, 4 * size, size, 2 * size))
@@ -192,4 +229,61 @@ Pawn::Pawn(Side side)
 	:
 	Piece(side, RectI(5 * size, 6 * size, 0, size), RectI(5 * size, 6 * size, size, 2 * size))
 {
+	if (side == Side::Black)
+	{
+		sense = -1;
+	}
+	else
+	{
+		sense = 1;
+	}
+}
+
+std::vector<Vei2> Pawn::possibleMoves(PieceManager table, Vei2 pos) const
+{
+	std::vector<Vei2> vec;
+	for (int j = -1; j <= 1; j++)
+	{
+		int maxi = 2;
+		if (sense == 1)
+		{
+			if (pos.y > 1)
+			{
+				maxi = 1;
+			}
+		}
+		else
+		{
+			if (pos.y < 6)
+			{
+				maxi = 1;
+			}
+		}
+		for (int i = 1; i <= maxi; i++)
+		{
+			Vei2 mobile = pos + Vei2(j, i * sense);
+			if (table.Contains(mobile))
+			{
+				const Piece* const p = table.GetPiece(mobile);
+				if (j)
+				{
+					if (p)
+					{
+						if (p->GetSide() != GetSide() && j)
+						{
+							vec.push_back(mobile);
+						}
+					}
+				}
+				else
+				{
+					if (p == nullptr)
+					{
+						vec.push_back(mobile);
+					}
+				}
+			}
+		}
+	}
+	return vec;
 }

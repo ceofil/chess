@@ -52,6 +52,7 @@ class Rook : public Piece //tura
 {
 public:
 	Rook(Side side);
+	std::vector<Vei2> possibleMoves(class PieceManager table, Vei2 pos) const override;
 };
 
 class Knight : public Piece
@@ -72,4 +73,7 @@ class Pawn : public Piece
 {
 public:
 	Pawn(Side side);
+	std::vector<Vei2> possibleMoves(class PieceManager table, Vei2 pos) const override;
+private:
+	int sense;
 };
