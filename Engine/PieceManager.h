@@ -14,6 +14,8 @@ public:
 	const Piece * const GetPiece(Vei2 brdPos) const;
 	bool Contains(int x, int y) const;
 	bool Contains(Vei2 brdPos) const;
+	Vei2 GetKingPos(Side side) const;
+	bool IsKingAttacked(Side side) const;
 
 private:
 	Piece*& pieceAt(int x, int y);

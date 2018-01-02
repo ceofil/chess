@@ -92,6 +92,103 @@ bool PieceManager::Contains(Vei2 brdPos) const
 	return Contains(brdPos.x,brdPos.y);
 }
 
+Vei2 PieceManager::GetKingPos(Side side) const
+{
+	for (int x = 0; x < 8; x++)
+	{
+		for (int y = 0; y < 8; y++)
+		{
+			const Piece* p = GetPiece({ x,y });
+			if (p)
+			{
+				if (p->IsKing() && p->GetSide() == side)
+				{
+					return { x,y };
+				}
+			}
+		}
+	}
+	return Vei2();
+}
+
+bool PieceManager::IsKingAttacked(Side side) const
+{
+	Vei2 kingPos = GetKingPos(side);
+
+	//checks for Rooks, Queens, Pawns and Bishops
+	std::vector<Vei2> possibleAttackerPos;
+	for (int i = -1; i <= 1; i++)
+	{
+		for (int j = -1; j <= 1; j++)
+		{
+			if (i || j)
+			{
+				const Vei2 delta = { j,i };
+				for (Vei2 mobile = kingPos + delta; Contains(mobile); mobile += delta)
+				{
+					const Piece* const p = GetPiece(mobile);
+					if (p)
+					{
+						if (p->GetSide() != side)
+						{
+							possibleAttackerPos.push_back(mobile);
+						}
+						break;
+					}
+				}
+			}
+		}
+	}
+	for (Vei2 attackerPos : possibleAttackerPos)
+	{
+		const Piece* attacker = GetPiece(attackerPos);
+		std::vector<Vei2> attackerRange = attacker->PossibleMoves(*this, attackerPos);
+		for (Vei2 move : attackerRange)
+		{
+			if (kingPos == move)
+			{
+				return true;
+			}
+		}
+	}
+
+	//checks for Knights
+	for (int i = -1; i <= 1; i += 2)
+	{
+		for (int j = -1; j <= 1; j += 2)
+		{
+			for (int n = 0; n <= 1; n++)
+			{
+				Vei2 delta;
+				if (n)
+				{
+					delta = { 2 * j,i };
+				}
+				else
+				{
+					delta = { j, 2 * i };
+				}
+				Vei2 mobile = kingPos + delta;
+				if (Contains(mobile))
+				{
+					const Piece* const p = GetPiece(mobile);
+					if (p)
+					{
+						if (p->GetSide() != side)
+						{
+							if (const Knight* pKnight = dynamic_cast<const Knight*>(p))
+							{
+								return true;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	return false;
+}
+
 Piece *& PieceManager::pieceAt(int x, int y)
 {
 	assert(Contains(x,y));

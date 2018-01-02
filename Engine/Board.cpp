@@ -70,7 +70,7 @@ void Board::HandleMousePressed(Vei2 screenPos)
 		{
 			if (p)
 			{
-				selectedPiece.validMoves = p->possibleMoves(table, brdPos);
+				selectedPiece.validMoves = p->PossibleMoves(table, brdPos);
 				selectedPiece.pos = brdPos;
 				state = GameState::PieceSelected;
 			}
@@ -88,7 +88,7 @@ void Board::HandleMousePressed(Vei2 screenPos)
 				{
 					if (p->GetSide() == table.GetPiece(selectedPiece.pos)->GetSide())
 					{
-						selectedPiece.validMoves = p->possibleMoves(table, brdPos);
+						selectedPiece.validMoves = p->PossibleMoves(table, brdPos);
 						selectedPiece.pos = brdPos;
 					}
 					else

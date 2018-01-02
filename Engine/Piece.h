@@ -20,8 +20,8 @@ public:
 	virtual ~Piece() = default;
 	void Draw(Vei2 pos, const Surface& surface, Graphics& gfx) const;
 	Side GetSide() const;
-	// this will be become abstract after I override it for all derived classes
-	virtual std::vector<Vei2> possibleMoves(class PieceManager table, Vei2 pos) const;
+	virtual std::vector<Vei2> PossibleMoves(class PieceManager table, Vei2 pos) const;
+	bool IsKing() const;
 
 private:
 	Side side;
@@ -38,42 +38,42 @@ class Queen : public Piece
 {
 public:
 	Queen(Side side);
-	std::vector<Vei2> possibleMoves(class PieceManager table, Vei2 pos) const override;
+	std::vector<Vei2> PossibleMoves(class PieceManager table, Vei2 pos) const override;
 };
 
 class King : public Piece
 {
 public:
 	King(Side side);
-	std::vector<Vei2> possibleMoves(class PieceManager table, Vei2 pos) const override;
+	std::vector<Vei2> PossibleMoves(class PieceManager table, Vei2 pos) const override;
 };
 
 class Rook : public Piece //tura
 {
 public:
 	Rook(Side side);
-	std::vector<Vei2> possibleMoves(class PieceManager table, Vei2 pos) const override;
+	std::vector<Vei2> PossibleMoves(class PieceManager table, Vei2 pos) const override;
 };
 
 class Knight : public Piece
 {
 public:
 	Knight(Side side);
-	std::vector<Vei2> possibleMoves(class PieceManager table, Vei2 pos) const override;
+	std::vector<Vei2> PossibleMoves(class PieceManager table, Vei2 pos) const override;
 };
 
 class Bishop : public Piece //nebun
 {
 public:
 	Bishop(Side side);
-	std::vector<Vei2> possibleMoves(class PieceManager table, Vei2 pos) const override;
+	std::vector<Vei2> PossibleMoves(class PieceManager table, Vei2 pos) const override;
 };
 
 class Pawn : public Piece 
 {
 public:
 	Pawn(Side side);
-	std::vector<Vei2> possibleMoves(class PieceManager table, Vei2 pos) const override;
+	std::vector<Vei2> PossibleMoves(class PieceManager table, Vei2 pos) const override;
 private:
 	int sense;
 };
