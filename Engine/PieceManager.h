@@ -16,6 +16,7 @@ public:
 	bool Contains(Vei2 brdPos) const;
 	Vei2 GetKingPos(Side side) const;
 	bool IsKingAttacked(Side side) const;
+	std::vector<Vei2> ValidMoves(Vei2 brdPos);
 
 private:
 	Piece*& pieceAt(int x, int y);

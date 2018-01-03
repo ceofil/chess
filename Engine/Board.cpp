@@ -32,6 +32,16 @@ void Board::Draw(Graphics & gfx) const
 		}
 	}
 	
+	if (table.IsKingAttacked(Side::Black))
+	{
+		CellAt(table.GetKingPos(Side::Black)).Draw(gfx, Colors::Red);
+	}
+	if (table.IsKingAttacked(Side::White))
+	{
+		CellAt(table.GetKingPos(Side::White)).Draw(gfx, Colors::Red);
+	}
+
+
 	for (int x = 0; x < 8; x++)
 	{
 		for (int y = 0; y < 8; y++)
@@ -46,9 +56,9 @@ void Board::Draw(Graphics & gfx) const
 	if (state == GameState::PieceSelected)
 	{
 		CellAt(selectedPiece.pos).DrawHighlight(gfx, highlightClr);
-		for (Vei2 pos : selectedPiece.validMoves)
+		for (Vei2 move : selectedPiece.validMoves)
 		{
-			CellAt(pos).DrawMark(gfx, highlightClr);
+			CellAt(move).DrawMark(gfx, highlightClr);
 		}
 	}
 }
@@ -70,7 +80,7 @@ void Board::HandleMousePressed(Vei2 screenPos)
 		{
 			if (p)
 			{
-				selectedPiece.validMoves = p->PossibleMoves(table, brdPos);
+				selectedPiece.validMoves = table.ValidMoves(brdPos);
 				selectedPiece.pos = brdPos;
 				state = GameState::PieceSelected;
 			}
@@ -88,7 +98,7 @@ void Board::HandleMousePressed(Vei2 screenPos)
 				{
 					if (p->GetSide() == table.GetPiece(selectedPiece.pos)->GetSide())
 					{
-						selectedPiece.validMoves = p->PossibleMoves(table, brdPos);
+						selectedPiece.validMoves = table.ValidMoves(brdPos);
 						selectedPiece.pos = brdPos;
 					}
 					else

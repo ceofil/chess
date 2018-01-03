@@ -113,7 +113,7 @@ Vei2 PieceManager::GetKingPos(Side side) const
 
 bool PieceManager::IsKingAttacked(Side side) const
 {
-	Vei2 kingPos = GetKingPos(side);
+	const Vei2 kingPos = GetKingPos(side);
 
 	//checks for Rooks, Queens, Pawns and Bishops
 	std::vector<Vei2> possibleAttackerPos;
@@ -188,6 +188,33 @@ bool PieceManager::IsKingAttacked(Side side) const
 	}
 	return false;
 }
+
+std::vector<Vei2> PieceManager::ValidMoves(Vei2 brdPos)
+{
+	std::vector<Vei2> validMoves;
+
+	for (Vei2 move : GetPiece(brdPos)->PossibleMoves(*this, brdPos))
+	{
+		Piece*& giver = pieceAt(brdPos);
+		Piece*& receiver = pieceAt(move);
+		Piece* receiverCopy = receiver;
+
+		Side side = giver->GetSide();
+
+		receiver = giver;
+		giver = nullptr;
+
+		if (!(IsKingAttacked(side)))
+		{
+			validMoves.push_back(move);
+		}
+
+		giver = receiver;
+		receiver = receiverCopy;
+	}
+	return validMoves;
+}
+
 
 Piece *& PieceManager::pieceAt(int x, int y)
 {
