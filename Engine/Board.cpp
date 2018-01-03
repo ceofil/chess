@@ -9,7 +9,7 @@ Board::Board(RectI rect)
 	{
 		for (int y = 0; y < 8; y++)
 		{
-			CellAt(x, y) = Cell(
+			cellAt(x, y) = Cell(
 				RectI(
 					rect.left + x * cellSize,
 					rect.left + (x + 1) * cellSize,
@@ -27,18 +27,18 @@ void Board::Draw(Graphics & gfx) const
 	{
 		for (int y = 0; y < 8; y++)
 		{
-			const Cell& c = CellAt(x, y);
+			const Cell& c = cellAt(x, y);
 			c.Draw(gfx, clr[(x + y) % 2]);
 		}
 	}
-	
+
 	if (table.IsKingAttacked(Side::Black))
 	{
-		CellAt(table.GetKingPos(Side::Black)).Draw(gfx, Colors::Red);
+		cellAt(table.GetKingPos(Side::Black)).Draw(gfx, Colors::Red);
 	}
 	if (table.IsKingAttacked(Side::White))
 	{
-		CellAt(table.GetKingPos(Side::White)).Draw(gfx, Colors::Red);
+		cellAt(table.GetKingPos(Side::White)).Draw(gfx, Colors::Red);
 	}
 
 
@@ -46,7 +46,7 @@ void Board::Draw(Graphics & gfx) const
 	{
 		for (int y = 0; y < 8; y++)
 		{
-			if (table.GetPiece({x,y}))
+			if (table.GetPiece({ x,y }))
 			{
 				table.GetPiece({ x,y })->Draw(pieceScreenPos(x, y), sprite, gfx);
 			}
@@ -55,10 +55,10 @@ void Board::Draw(Graphics & gfx) const
 
 	if (state == GameState::PieceSelected)
 	{
-		CellAt(selectedPiece.pos).DrawHighlight(gfx, highlightClr);
+		cellAt(selectedPiece.pos).DrawHighlight(gfx, highlightClr);
 		for (Vei2 move : selectedPiece.validMoves)
 		{
-			CellAt(move).DrawMark(gfx, highlightClr);
+			cellAt(move).DrawMark(gfx, highlightClr);
 		}
 	}
 }
@@ -80,9 +80,12 @@ void Board::HandleMousePressed(Vei2 screenPos)
 		{
 			if (p)
 			{
-				selectedPiece.validMoves = table.ValidMoves(brdPos);
-				selectedPiece.pos = brdPos;
-				state = GameState::PieceSelected;
+				if (p->GetSide() == turn)
+				{
+					selectedPiece.validMoves = table.ValidMoves(brdPos);
+					selectedPiece.pos = brdPos;
+					state = GameState::PieceSelected;
+				}
 			}
 			break;
 		}
@@ -103,13 +106,21 @@ void Board::HandleMousePressed(Vei2 screenPos)
 					}
 					else
 					{
-						table.Transfer(selectedPiece.pos, brdPos);
+						if (std::find(selectedPiece.validMoves.begin(), selectedPiece.validMoves.end(), brdPos) != selectedPiece.validMoves.end())
+						{
+							table.Transfer(selectedPiece.pos, brdPos);
+							changeTurn();
+						}
 						state = GameState::Waiting;
 					}
 				}
 				else
 				{
-					table.Transfer(selectedPiece.pos, brdPos);
+					if (std::find(selectedPiece.validMoves.begin(), selectedPiece.validMoves.end(), brdPos) != selectedPiece.validMoves.end())
+					{
+						table.Transfer(selectedPiece.pos, brdPos);
+						changeTurn();
+					}
 					state = GameState::Waiting;
 				}
 			}
@@ -123,24 +134,36 @@ void Board::HandleMousePressed(Vei2 screenPos)
 	}
 }
 
-const Cell & Board::CellAt(Vei2 brdPos) const
+const Cell & Board::cellAt(Vei2 brdPos) const
 {
-	return CellAt(brdPos.x, brdPos.y);
+	return cellAt(brdPos.x, brdPos.y);
 }
 
-const Cell & Board::CellAt(int x, int y) const
+const Cell & Board::cellAt(int x, int y) const
 {
 	return cells[y * 8 + x];
 }
 
-Cell & Board::CellAt(int x, int y)
+Cell & Board::cellAt(int x, int y)
 {
 	return cells[y * 8 + x];
 }
 
 Vei2 Board::pieceScreenPos(int x, int y) const 
 {
-	return CellAt(x, y).GetRect().GetCenter() - Vei2(30, 30);
+	return cellAt(x, y).GetRect().GetCenter() - Vei2(30, 30);
+}
+
+void Board::changeTurn()
+{
+	if (turn == Side::White)
+	{
+		turn = Side::Black;
+	}
+	else
+	{
+		turn = Side::White;
+	}
 }
 
 void Board::InitializePieces()

@@ -247,24 +247,31 @@ Pawn::Pawn(Side side)
 std::vector<Vei2> Pawn::PossibleMoves(PieceManager table, Vei2 pos) const
 {
 	std::vector<Vei2> vec;
-	for (int j = -1; j <= 1; j++)
+	
+	int maxi = 2;
+	if (sense == 1)
 	{
-		int maxi = 2;
-		if (sense == 1)
+		if (pos.y > 1)
 		{
-			if (pos.y > 1)
-			{
-				maxi = 1;
-			}
+			maxi = 1;
 		}
-		else
+	}
+	else
+	{
+		if (pos.y < 6)
 		{
-			if (pos.y < 6)
-			{
-				maxi = 1;
-			}
+			maxi = 1;
 		}
-		for (int i = 1; i <= maxi; i++)
+	}
+	for (int i = 1; i <= maxi; i++)
+	{
+		int left = -1;
+		int right = 1;
+		if (i == 2)
+		{
+			left = right = 0;
+		}
+		for (int j = left; j <= right; j++)
 		{
 			Vei2 mobile = pos + Vei2(j, i * sense);
 			if (table.Contains(mobile))

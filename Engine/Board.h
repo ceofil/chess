@@ -20,10 +20,11 @@ private:
 	RectI rect;
 	int cellSize;
 	Cell cells[64];
-	const Cell& CellAt(Vei2 brdPos) const;
-	const Cell& CellAt(int x, int y) const;
-	Cell& CellAt(int x, int y);
+	const Cell& cellAt(Vei2 brdPos) const;
+	const Cell& cellAt(int x, int y) const;
+	Cell& cellAt(int x, int y);
 	Vei2 pieceScreenPos(int x, int y) const;
+	void changeTurn();
 
 private:
 	Surface sprite = Surface("Sprites\\ChessPiecesArray320x120.bmp");
@@ -47,5 +48,6 @@ private:
 		std::vector<Vei2> validMoves;
 	};
 	Selected selectedPiece;
+	Side turn = Side::White;
 };
 
