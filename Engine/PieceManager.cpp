@@ -74,6 +74,7 @@ void PieceManager::Transfer(Vei2 giverPos, Vei2 receiverPos)
 	Piece*& giver = pieceAt(giverPos);
 	SetPiece(receiverPos, giver);
 	pieceAt(giverPos) = nullptr;
+	pieceAt(receiverPos)->Moved();
 }
 
 const Piece * const PieceManager::GetPiece(Vei2 brdPos) const

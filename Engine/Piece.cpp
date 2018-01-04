@@ -30,6 +30,16 @@ bool Piece::IsKing() const
 	return isKing;
 }
 
+void Piece::Moved()
+{
+	hasMoved = true;
+}
+
+bool Piece::HasMoved() const
+{
+	return hasMoved;
+}
+
 King::King(Side side)
 	:
 	Piece(side, RectI(size, 2 * size, 0, size), RectI(size, 2 * size, size, 2 * size), true)
@@ -249,19 +259,9 @@ std::vector<Vei2> Pawn::PossibleMoves(PieceManager table, Vei2 pos) const
 	std::vector<Vei2> vec;
 	
 	int maxi = 2;
-	if (sense == 1)
+	if (HasMoved())
 	{
-		if (pos.y > 1)
-		{
-			maxi = 1;
-		}
-	}
-	else
-	{
-		if (pos.y < 6)
-		{
-			maxi = 1;
-		}
+		maxi = 1;
 	}
 	for (int i = 1; i <= maxi; i++)
 	{

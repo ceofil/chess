@@ -22,11 +22,14 @@ public:
 	Side GetSide() const;
 	virtual std::vector<Vei2> PossibleMoves(class PieceManager table, Vei2 pos) const;
 	bool IsKing() const;
+	bool HasMoved() const;
+	void Moved();
 
 private:
 	Side side;
 	bool isKing;
 	RectI rect[2]; //0 for white, 1 for black
+	bool hasMoved = false;
 
 
 
