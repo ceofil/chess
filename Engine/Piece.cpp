@@ -48,6 +48,19 @@ King::King(Side side)
 
 std::vector<Vei2> King::PossibleMoves(const PieceManager& table, Vei2 pos) const
 {
+	//kings can't get in each other's range
+	Side otherSide = Side::Black;
+	if (GetSide() == otherSide)
+	{
+		otherSide = Side::White;
+	}
+	const Vei2 otherKingPos = table.GetKingPos(otherSide);
+	const auto isInOtherKingRange = [=](Vei2 mobile) 
+	{
+		return (std::abs(mobile.x - otherKingPos.x) <= 1 && (std::abs(mobile.y - otherKingPos.y) <= 1));
+	};
+
+
 	std::vector<Vei2> vec;
 	for (int i = -1; i <= 1; i++)
 	{
@@ -56,19 +69,22 @@ std::vector<Vei2> King::PossibleMoves(const PieceManager& table, Vei2 pos) const
 			if (i || j)
 			{
 				Vei2 mobile = pos + Vei2( j, i );
-				if (table.Contains(mobile))
+				if (!isInOtherKingRange(mobile))
 				{
-					const Piece* const p = table.GetPiece(mobile);
-					if (p)
+					if (table.Contains(mobile))
 					{
-						if (p->GetSide() != GetSide())
+						const Piece* const p = table.GetPiece(mobile);
+						if (p)
+						{
+							if (p->GetSide() != GetSide())
+							{
+								vec.push_back(mobile);
+							}
+						}
+						else
 						{
 							vec.push_back(mobile);
 						}
-					}
-					else
-					{
-						vec.push_back(mobile);
 					}
 				}
 			}
@@ -79,46 +95,53 @@ std::vector<Vei2> King::PossibleMoves(const PieceManager& table, Vei2 pos) const
 	if (HasMoved() == false && table.IsKingAttacked(GetSide()) == false)
 	{
 		//normally I should check if it's a rook but if the piece is it at that position and it has not moved it is certainly a rook
-		Vei2 leftRookPos = pos - Vei2(3, 0);
+		const Vei2 leftRookPos = Vei2(0, pos.y);
 		const Piece* leftRook = table.GetPiece(leftRookPos);
-		if (leftRook->HasMoved() == false)
+		if (leftRook)
 		{
-			bool isValid = true;
-			for (int x = 1; x < 3; x++)
+			if (leftRook->HasMoved() == false)
 			{
-				Vei2 posToCheck = pos - Vei2(x, 0);
-				if (table.GetPiece(posToCheck) || table.IsValidMove(pos, posToCheck) == false)
+				bool isValid = true;
+				for (int x = 1; x < 3; x++)
 				{
-					isValid = false;
-					break;
+					Vei2 posToCheck = pos - Vei2(x, 0);
+					if (table.GetPiece(posToCheck) || table.IsValidMove(pos, posToCheck) == false || isInOtherKingRange(posToCheck))
+					{
+						isValid = false;
+						break;
+					}
 				}
-			}
-			if (isValid)
-			{
-				vec.push_back(leftRookPos);
+				if (isValid)
+				{
+					vec.push_back(leftRookPos);
+				}
 			}
 		}
-		Vei2 rightRookPos = pos + Vei2(4, 0);
+		
+		const Vei2 rightRookPos = Vei2(7, pos.y);
 		const Piece* rightRook = table.GetPiece(rightRookPos);
-		if (rightRook->HasMoved() == false)
+		if (rightRook)
 		{
-			bool isValid = true;
-			if (table.GetPiece(pos + Vei2(3, 0)))
+			if (rightRook->HasMoved() == false)
 			{
-				isValid = false;
-			}
-			for (int x = 1; x < 3; x++)
-			{
-				Vei2 posToCheck = pos + Vei2(x, 0);
-				if (table.GetPiece(posToCheck) || table.IsValidMove(pos, posToCheck) == false)
+				bool isValid = true;
+				if (table.GetPiece(pos + Vei2(3, 0)))
 				{
 					isValid = false;
-					break;
 				}
-			}
-			if (isValid)
-			{
-				vec.push_back(rightRookPos);
+				for (int x = 1; x < 3; x++)
+				{
+					Vei2 posToCheck = pos + Vei2(x, 0);
+					if (table.GetPiece(posToCheck) || table.IsValidMove(pos, posToCheck) == false || isInOtherKingRange(posToCheck))
+					{
+						isValid = false;
+						break;
+					}
+				}
+				if (isValid)
+				{
+					vec.push_back(rightRookPos);
+				}
 			}
 		}
 	}

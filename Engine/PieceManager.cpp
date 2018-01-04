@@ -130,7 +130,7 @@ Vei2 PieceManager::GetKingPos(Side side) const
 bool PieceManager::IsKingAttacked(Side side) const
 {
 	const Vei2 kingPos = GetKingPos(side);
-
+	
 	//checks for Rooks, Queens, Pawns and Bishops
 	std::vector<Vei2> possibleAttackerPos;
 	for (int i = -1; i <= 1; i++)
@@ -142,7 +142,7 @@ bool PieceManager::IsKingAttacked(Side side) const
 				const Vei2 delta = { j,i };
 				for (Vei2 mobile = kingPos + delta; Contains(mobile); mobile += delta)
 				{
-					const Piece* const p = GetPiece(mobile);
+					const Piece* p = GetPiece(mobile);
 					if (p)
 					{
 						if (p->GetSide() != side)
@@ -158,16 +158,24 @@ bool PieceManager::IsKingAttacked(Side side) const
 	for (Vei2 attackerPos : possibleAttackerPos)
 	{
 		const Piece* attacker = GetPiece(attackerPos);
-		std::vector<Vei2> attackerRange = attacker->PossibleMoves(*this, attackerPos);
-		for (Vei2 move : attackerRange)
+
+		/*
+			King::PossibleMoves calls PieceManager::IsKingAttacked ( because a king can't pass through check when castling )
+			So I avoid that because it would cause infinite recursion and kings can't get in each other's range anyway, it's illegal.
+		*/
+		if (attacker->IsKing() == false)
 		{
-			if (kingPos == move)
+			std::vector<Vei2> attackerRange = attacker->PossibleMoves(*this, attackerPos);  
+			for (Vei2 move : attackerRange)
 			{
-				return true;
+				if (kingPos == move)
+				{
+					return true;
+				}
 			}
 		}
 	}
-
+	
 	//checks for Knights
 	for (int i = -1; i <= 1; i += 2)
 	{
