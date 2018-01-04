@@ -20,7 +20,7 @@ Side Piece::GetSide() const
 	return side;
 }
 
-std::vector<Vei2> Piece::PossibleMoves(PieceManager table, Vei2 pos) const
+std::vector<Vei2> Piece::PossibleMoves(const PieceManager& table, Vei2 pos) const
 {
 	return std::vector<Vei2>();
 }
@@ -46,7 +46,7 @@ King::King(Side side)
 {
 }
 
-std::vector<Vei2> King::PossibleMoves(PieceManager table, Vei2 pos) const
+std::vector<Vei2> King::PossibleMoves(const PieceManager& table, Vei2 pos) const
 {
 	std::vector<Vei2> vec;
 	for (int i = -1; i <= 1; i++)
@@ -83,7 +83,7 @@ Queen::Queen(Side side)
 {
 }
 
-std::vector<Vei2> Queen::PossibleMoves(PieceManager table, Vei2 pos) const
+std::vector<Vei2> Queen::PossibleMoves(const PieceManager& table, Vei2 pos) const
 {
 	std::vector<Vei2> vec;
 	for (int i = -1; i <= 1; i++)
@@ -121,7 +121,7 @@ Rook::Rook(Side side)
 {
 }
 
-std::vector<Vei2> Rook::PossibleMoves(PieceManager table, Vei2 pos) const
+std::vector<Vei2> Rook::PossibleMoves(const PieceManager& table, Vei2 pos) const
 {
 	std::vector<Vei2> vec;
 	for (int i = -1; i <= 1; i += 2)
@@ -164,7 +164,7 @@ Knight::Knight(Side side)
 {
 }
 
-std::vector<Vei2> Knight::PossibleMoves(PieceManager table, Vei2 pos) const
+std::vector<Vei2> Knight::PossibleMoves(const PieceManager& table, Vei2 pos) const
 {
 	std::vector<Vei2> vec;
 	for (int i = -1; i <= 1; i += 2)
@@ -211,7 +211,7 @@ Bishop::Bishop(Side side)
 {
 }
 
-std::vector<Vei2> Bishop::PossibleMoves(PieceManager table, Vei2 pos) const
+std::vector<Vei2> Bishop::PossibleMoves(const PieceManager& table, Vei2 pos) const
 {
 	std::vector<Vei2> vec;
 	for (int i = -1; i <= 1; i += 2)
@@ -254,7 +254,7 @@ Pawn::Pawn(Side side)
 	}
 }
 
-std::vector<Vei2> Pawn::PossibleMoves(PieceManager table, Vei2 pos) const
+std::vector<Vei2> Pawn::PossibleMoves(const PieceManager& table, Vei2 pos) const
 {
 	std::vector<Vei2> vec;
 	

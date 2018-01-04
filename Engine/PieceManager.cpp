@@ -190,30 +190,38 @@ bool PieceManager::IsKingAttacked(Side side) const
 	return false;
 }
 
-std::vector<Vei2> PieceManager::ValidMoves(Vei2 brdPos)
+std::vector<Vei2> PieceManager::ValidMoves(Vei2 brdPos) const
 {
 	std::vector<Vei2> validMoves;
 
 	for (Vei2 move : GetPiece(brdPos)->PossibleMoves(*this, brdPos))
 	{
-		Piece*& giver = pieceAt(brdPos);
-		Piece*& receiver = pieceAt(move);
-		Piece* receiverCopy = receiver;
-
-		Side side = giver->GetSide();
-
-		receiver = giver;
-		giver = nullptr;
-
-		if (!(IsKingAttacked(side)))
+		if (IsValidMove(brdPos, move))
 		{
 			validMoves.push_back(move);
 		}
-
-		giver = receiver;
-		receiver = receiverCopy;
 	}
 	return validMoves;
+}
+
+bool PieceManager::IsValidMove(Vei2 brdPos, Vei2 move) const
+{
+	//using const_cast because I'm just swaping the pointers around but in the end everything is unchanged
+	Piece*& giver = const_cast<PieceManager*>(this)->pieceAt(brdPos);
+	Piece*& receiver = const_cast<PieceManager*>(this)->pieceAt(move);
+	Piece* receiverCopy = receiver;
+
+	Side side = giver->GetSide();
+
+	receiver = giver;
+	giver = nullptr;
+
+	bool isValid = !(IsKingAttacked(side));
+
+	giver = receiver;
+	receiver = receiverCopy;
+
+	return isValid;
 }
 
 
