@@ -11,6 +11,7 @@ public:
 	void SetPiece(Vei2 brdPos, Piece* ptr);
 	void SetPiece(int x, int y, Piece* ptr);
 	void Transfer(Vei2 giverPos, Vei2 receiverPos);
+	void DoCastle(Vei2 kingPos, Vei2 rookPos);
 	const Piece * const GetPiece(Vei2 brdPos) const;
 	bool Contains(int x, int y) const;
 	bool Contains(Vei2 brdPos) const;

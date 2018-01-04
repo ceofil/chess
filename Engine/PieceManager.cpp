@@ -77,6 +77,21 @@ void PieceManager::Transfer(Vei2 giverPos, Vei2 receiverPos)
 	pieceAt(receiverPos)->Moved();
 }
 
+void PieceManager::DoCastle(Vei2 kingPos, Vei2 rookPos)
+{
+	const int y = rookPos.y; 
+	if (rookPos.x == 0)
+	{
+		Transfer(kingPos, Vei2(1, y));
+		Transfer(rookPos, Vei2(2, y));
+	}
+	else
+	{
+		Transfer(kingPos, Vei2(5, y));
+		Transfer(rookPos, Vei2(4, y));
+	}
+}
+
 const Piece * const PieceManager::GetPiece(Vei2 brdPos) const
 {
 	assert(Contains(brdPos));
@@ -206,6 +221,7 @@ std::vector<Vei2> PieceManager::ValidMoves(Vei2 brdPos) const
 
 bool PieceManager::IsValidMove(Vei2 brdPos, Vei2 move) const
 {
+	assert(brdPos != move);
 	//using const_cast because I'm just swaping the pointers around but in the end everything is unchanged
 	Piece*& giver = const_cast<PieceManager*>(this)->pieceAt(brdPos);
 	Piece*& receiver = const_cast<PieceManager*>(this)->pieceAt(move);

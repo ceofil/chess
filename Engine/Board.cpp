@@ -101,8 +101,27 @@ void Board::HandleMousePressed(Vei2 screenPos)
 				{
 					if (p->GetSide() == table.GetPiece(selectedPiece.pos)->GetSide())
 					{
-						selectedPiece.validMoves = table.ValidMoves(brdPos);
-						selectedPiece.pos = brdPos;
+						//if rook && can do castle 
+						bool isRook = false;
+						if (const Rook* pKnight = dynamic_cast<const Rook*>(p))
+						{ 
+							isRook = true;
+						}
+						if (isRook && table.GetPiece(selectedPiece.pos)->IsKing())
+						{
+							if (std::find(selectedPiece.validMoves.begin(), selectedPiece.validMoves.end(), brdPos) != selectedPiece.validMoves.end())
+							{
+								table.DoCastle(selectedPiece.pos, brdPos);
+								changeTurn();
+								state = GameState::Waiting;
+							}
+						}
+						//just change selected piece normally
+						else
+						{
+							selectedPiece.validMoves = table.ValidMoves(brdPos);
+							selectedPiece.pos = brdPos;
+						}
 					}
 					else
 					{

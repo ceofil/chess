@@ -74,6 +74,54 @@ std::vector<Vei2> King::PossibleMoves(const PieceManager& table, Vei2 pos) const
 			}
 		}
 	}
+
+	//rook swap case
+	if (HasMoved() == false && table.IsKingAttacked(GetSide()) == false)
+	{
+		//normally I should check if it's a rook but if the piece is it at that position and it has not moved it is certainly a rook
+		Vei2 leftRookPos = pos - Vei2(3, 0);
+		const Piece* leftRook = table.GetPiece(leftRookPos);
+		if (leftRook->HasMoved() == false)
+		{
+			bool isValid = true;
+			for (int x = 1; x < 3; x++)
+			{
+				Vei2 posToCheck = pos - Vei2(x, 0);
+				if (table.GetPiece(posToCheck) || table.IsValidMove(pos, posToCheck) == false)
+				{
+					isValid = false;
+					break;
+				}
+			}
+			if (isValid)
+			{
+				vec.push_back(leftRookPos);
+			}
+		}
+		Vei2 rightRookPos = pos + Vei2(4, 0);
+		const Piece* rightRook = table.GetPiece(rightRookPos);
+		if (rightRook->HasMoved() == false)
+		{
+			bool isValid = true;
+			if (table.GetPiece(pos + Vei2(3, 0)))
+			{
+				isValid = false;
+			}
+			for (int x = 1; x < 3; x++)
+			{
+				Vei2 posToCheck = pos + Vei2(x, 0);
+				if (table.GetPiece(posToCheck) || table.IsValidMove(pos, posToCheck) == false)
+				{
+					isValid = false;
+					break;
+				}
+			}
+			if (isValid)
+			{
+				vec.push_back(rightRookPos);
+			}
+		}
+	}
 	return vec;
 }
 
