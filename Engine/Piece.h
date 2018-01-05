@@ -20,7 +20,7 @@ public:
 	virtual ~Piece() = default;
 	void Draw(Vei2 pos, const Surface& surface, Graphics& gfx) const;
 	Side GetSide() const;
-	virtual std::vector<Vei2> PossibleMoves(const class PieceManager& table, Vei2 pos) const;
+	virtual std::vector<Vei2> PossibleMoves(const class PieceManager& table, const Vei2 pos) const;
 	bool IsKing() const;
 	bool HasMoved() const;
 	void Moved();
@@ -34,49 +34,49 @@ private:
 
 
 public:
-	const static int size = 60; //TO DO: make it sprite width / 6 
+	static constexpr int size = 60; 
 };
 
 class Queen : public Piece
 {
 public:
 	Queen(Side side);
-	std::vector<Vei2> PossibleMoves(const class PieceManager& table, Vei2 pos) const override;
+	std::vector<Vei2> PossibleMoves(const class PieceManager& table, const Vei2 pos) const override;
 };
 
 class King : public Piece
 {
 public:
 	King(Side side);
-	std::vector<Vei2> PossibleMoves(const class PieceManager& table, Vei2 pos) const override;
+	std::vector<Vei2> PossibleMoves(const class PieceManager& table, const Vei2 pos) const override;
 };
 
-class Rook : public Piece //tura
+class Rook : public Piece
 {
 public:
 	Rook(Side side);
-	std::vector<Vei2> PossibleMoves(const class PieceManager& table, Vei2 pos) const override;
+	std::vector<Vei2> PossibleMoves(const class PieceManager& table, const Vei2 pos) const override;
 };
 
 class Knight : public Piece
 {
 public:
 	Knight(Side side);
-	std::vector<Vei2> PossibleMoves(const class PieceManager& table, Vei2 pos) const override;
+	std::vector<Vei2> PossibleMoves(const class PieceManager& table, const Vei2 pos) const override;
 };
 
-class Bishop : public Piece //nebun
+class Bishop : public Piece
 {
 public:
 	Bishop(Side side);
-	std::vector<Vei2> PossibleMoves(const class PieceManager& table, Vei2 pos) const override;
+	std::vector<Vei2> PossibleMoves(const class PieceManager& table, const Vei2 pos) const override;
 };
 
 class Pawn : public Piece 
 {
 public:
 	Pawn(Side side);
-	std::vector<Vei2> PossibleMoves(const class PieceManager& table, Vei2 pos) const override;
+	std::vector<Vei2> PossibleMoves(const class PieceManager& table, const Vei2 pos) const override;
 private:
 	int sense;
 };

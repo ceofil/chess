@@ -20,7 +20,7 @@ Side Piece::GetSide() const
 	return side;
 }
 
-std::vector<Vei2> Piece::PossibleMoves(const PieceManager& table, Vei2 pos) const
+std::vector<Vei2> Piece::PossibleMoves(const PieceManager& table, const  Vei2 pos) const
 {
 	return std::vector<Vei2>();
 }
@@ -46,7 +46,7 @@ King::King(Side side)
 {
 }
 
-std::vector<Vei2> King::PossibleMoves(const PieceManager& table, Vei2 pos) const
+std::vector<Vei2> King::PossibleMoves(const PieceManager& table, const Vei2 pos) const
 {
 	//kings can't get in each other's range
 	Side otherSide = Side::Black;
@@ -62,13 +62,13 @@ std::vector<Vei2> King::PossibleMoves(const PieceManager& table, Vei2 pos) const
 
 
 	std::vector<Vei2> vec;
-	for (int i = -1; i <= 1; i++)
+	for (int dy = -1; dy <= 1; dy++)
 	{
-		for (int j = -1; j <= 1; j++)
+		for (int dx = -1; dx <= 1; dx++)
 		{
-			if (i || j)
+			if (dy || dx)
 			{
-				Vei2 mobile = pos + Vei2( j, i );
+				Vei2 mobile = pos + Vei2( dx, dy );
 				if (!isInOtherKingRange(mobile))
 				{
 					if (table.Contains(mobile))
@@ -154,16 +154,16 @@ Queen::Queen(Side side)
 {
 }
 
-std::vector<Vei2> Queen::PossibleMoves(const PieceManager& table, Vei2 pos) const
+std::vector<Vei2> Queen::PossibleMoves(const PieceManager& table, const Vei2 pos) const
 {
 	std::vector<Vei2> vec;
-	for (int i = -1; i <= 1; i++)
+	for (int dy = -1; dy <= 1; dy++)
 	{
-		for (int j = -1; j <= 1; j++)
+		for (int dx = -1; dx <= 1; dx++)
 		{
-			if (i || j)
+			if (dy || dx)
 			{
-				const Vei2 delta = { j,i };
+				const Vei2 delta = { dx,dy };
 				for (Vei2 mobile = pos + delta; table.Contains(mobile); mobile += delta)
 				{
 					const Piece* const p = table.GetPiece(mobile);
@@ -192,21 +192,21 @@ Rook::Rook(Side side)
 {
 }
 
-std::vector<Vei2> Rook::PossibleMoves(const PieceManager& table, Vei2 pos) const
+std::vector<Vei2> Rook::PossibleMoves(const PieceManager& table, const Vei2 pos) const
 {
 	std::vector<Vei2> vec;
-	for (int i = -1; i <= 1; i += 2)
+	for (int d = -1; d <= 1; d += 2)
 	{
 		for (int n = 0; n <= 1; n++)
 		{
 			Vei2 delta;
 			if (n)
 			{
-				delta = { 0,i };
+				delta = { 0,d };
 			}
 			else
 			{
-				delta = { i,0 };
+				delta = { d,0 };
 			}
 			for (Vei2 mobile = pos + delta; table.Contains(mobile); mobile += delta)
 			{
@@ -235,23 +235,23 @@ Knight::Knight(Side side)
 {
 }
 
-std::vector<Vei2> Knight::PossibleMoves(const PieceManager& table, Vei2 pos) const
+std::vector<Vei2> Knight::PossibleMoves(const PieceManager& table, const Vei2 pos) const
 {
 	std::vector<Vei2> vec;
-	for (int i = -1; i <= 1; i += 2)
+	for (int dy = -1; dy <= 1; dy += 2)
 	{
-		for (int j = -1; j <= 1; j += 2)
+		for (int dx = -1; dx <= 1; dx += 2)
 		{
 			for (int n = 0; n <= 1; n++)
 			{
 				Vei2 delta;
 				if (n)
 				{
-					delta = { 2 * j,i };
+					delta = { 2 * dx,dy };
 				}
 				else
 				{
-					delta = { j, 2 * i };
+					delta = { dx, 2 * dy };
 				}
 				Vei2 mobile = pos + delta;
 				if (table.Contains(mobile))
@@ -282,14 +282,14 @@ Bishop::Bishop(Side side)
 {
 }
 
-std::vector<Vei2> Bishop::PossibleMoves(const PieceManager& table, Vei2 pos) const
+std::vector<Vei2> Bishop::PossibleMoves(const PieceManager& table, const Vei2 pos) const
 {
 	std::vector<Vei2> vec;
-	for (int i = -1; i <= 1; i += 2)
+	for (int dy = -1; dy <= 1; dy += 2)
 	{
-		for (int j = -1; j <= 1; j += 2)
+		for (int dx = -1; dx <= 1; dx += 2)
 		{
-			const Vei2 delta = { j,i };
+			const Vei2 delta = { dx,dy };
 			for (Vei2 mobile = pos + delta; table.Contains(mobile); mobile += delta)
 			{
 				const Piece* const p = table.GetPiece(mobile);
@@ -325,7 +325,7 @@ Pawn::Pawn(Side side)
 	}
 }
 
-std::vector<Vei2> Pawn::PossibleMoves(const PieceManager& table, Vei2 pos) const
+std::vector<Vei2> Pawn::PossibleMoves(const PieceManager& table, const Vei2 pos) const
 {
 	std::vector<Vei2> vec;
 	
@@ -334,25 +334,25 @@ std::vector<Vei2> Pawn::PossibleMoves(const PieceManager& table, Vei2 pos) const
 	{
 		maxi = 1;
 	}
-	for (int i = 1; i <= maxi; i++)
+	for (int dy = 1; dy <= maxi; dy++)
 	{
 		int left = -1;
 		int right = 1;
-		if (i == 2)
+		if (dy == 2)
 		{
 			left = right = 0;
 		}
-		for (int j = left; j <= right; j++)
+		for (int dx = left; dx <= right; dx++)
 		{
-			Vei2 mobile = pos + Vei2(j, i * sense);
+			Vei2 mobile = pos + Vei2(dx, dy * sense);
 			if (table.Contains(mobile))
 			{
 				const Piece* const p = table.GetPiece(mobile);
-				if (j)
+				if (dx)
 				{
 					if (p)
 					{
-						if (p->GetSide() != GetSide() && j)
+						if (p->GetSide() != GetSide())
 						{
 							vec.push_back(mobile);
 						}

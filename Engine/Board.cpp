@@ -101,7 +101,7 @@ void Board::HandleMousePressed(Vei2 screenPos)
 				{
 					if (p->GetSide() == table.GetPiece(selectedPiece.pos)->GetSide())
 					{
-						//if rook && can do castle 
+						//if rook && can do castle
 						bool isRook = false;
 						if (const Rook* pKnight = dynamic_cast<const Rook*>(p))
 						{ 
