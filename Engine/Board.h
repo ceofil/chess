@@ -24,6 +24,7 @@ private:
 	const Cell& cellAt(int x, int y) const;
 	Cell& cellAt(int x, int y);
 	Vei2 pieceScreenPos(int x, int y) const;
+	void drawPawnReplacements(Side side, Graphics& gfx) const;
 	void changeTurn();
 
 private:
@@ -39,7 +40,8 @@ private:
 	enum class GameState
 	{
 		Waiting,
-		PieceSelected
+		PieceSelected,
+		PawnReplacement
 	};
 	GameState state = GameState::Waiting;
 	struct Selected

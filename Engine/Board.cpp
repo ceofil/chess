@@ -61,6 +61,10 @@ void Board::Draw(Graphics & gfx) const
 			cellAt(move).DrawMark(gfx, highlightClr);
 		}
 	}
+	if (state == GameState::PawnReplacement)
+	{
+		drawPawnReplacements(turn, gfx);
+	}
 }
 
 void Board::HandleMousePressed(Vei2 screenPos)
@@ -128,20 +132,83 @@ void Board::HandleMousePressed(Vei2 screenPos)
 						if (std::find(selectedPiece.validMoves.begin(), selectedPiece.validMoves.end(), brdPos) != selectedPiece.validMoves.end())
 						{
 							table.Transfer(selectedPiece.pos, brdPos);
-							changeTurn();
+							bool isPawn = false;
+							if (const Pawn* pPawn = dynamic_cast<const Pawn*>(table.GetPiece(brdPos)))
+							{
+								isPawn = true;
+							}
+							if (isPawn && (brdPos.y == 0 || brdPos.y == 7))
+							{
+								state = GameState::PawnReplacement;
+								selectedPiece.pos = brdPos;
+							}
+							else
+							{
+								changeTurn();
+								state = GameState::Waiting;
+							}
 						}
-						state = GameState::Waiting;
+						else
+						{
+							state = GameState::Waiting;
+						}
 					}
 				}
 				else
 				{
 					if (std::find(selectedPiece.validMoves.begin(), selectedPiece.validMoves.end(), brdPos) != selectedPiece.validMoves.end())
 					{
+
 						table.Transfer(selectedPiece.pos, brdPos);
-						changeTurn();
+						bool isPawn = false;
+						if (const Pawn* pPawn = dynamic_cast<const Pawn*>(table.GetPiece(brdPos)))
+						{
+							isPawn = true;
+						}
+						if (isPawn && (brdPos.y == 0 || brdPos.y == 7))
+						{
+							state = GameState::PawnReplacement;
+							selectedPiece.pos = brdPos;
+						}
+						else
+						{
+							changeTurn();
+							state = GameState::Waiting;
+						}
 					}
-					state = GameState::Waiting;
+					else
+					{
+						state = GameState::Waiting;
+					}
 				}
+			}
+			break;
+		}
+		case GameState::PawnReplacement:
+		{
+			if (brdPos == Vei2(3, 3))
+			{
+				table.SetPiece(selectedPiece.pos, new Queen(turn));
+				changeTurn();
+				state = GameState::Waiting;
+			}
+			else if (brdPos == Vei2(3, 4))
+			{
+				table.SetPiece(selectedPiece.pos, new Rook(turn));
+				changeTurn();
+				state = GameState::Waiting;
+			}
+			else if (brdPos == Vei2(4, 3))
+			{
+				table.SetPiece(selectedPiece.pos, new Knight(turn));
+				changeTurn();
+				state = GameState::Waiting;
+			}
+			else if (brdPos == Vei2(4, 4))
+			{
+				table.SetPiece(selectedPiece.pos, new Bishop(turn));
+				changeTurn();
+				state = GameState::Waiting;
 			}
 			break;
 		}
@@ -168,9 +235,20 @@ Cell & Board::cellAt(int x, int y)
 	return cells[y * 8 + x];
 }
 
-Vei2 Board::pieceScreenPos(int x, int y) const 
+Vei2 Board::pieceScreenPos(int x, int y) const
 {
 	return cellAt(x, y).GetRect().GetCenter() - Vei2(30, 30);
+}
+
+void Board::drawPawnReplacements(Side side, Graphics & gfx) const
+{
+	RectI lilRect = rect.GetExpanded(-3 * cellSize);
+	gfx.DrawRect(lilRect, Color(200,200,200));
+	gfx.DrawRectStroke(lilRect, 3, Color(137, 28, 28));
+	Queen(side).Draw(pieceScreenPos(3, 3), sprite, gfx);
+	Rook(side).Draw(pieceScreenPos(3, 4), sprite, gfx);
+	Knight(side).Draw(pieceScreenPos(4, 3), sprite, gfx);
+	Bishop(side).Draw(pieceScreenPos(4, 4), sprite, gfx);
 }
 
 void Board::changeTurn()
@@ -202,5 +280,6 @@ void Board::InitializePieces()
 			table.SetPiece( j, 1 + i * 5 , new Pawn((Side)i));
 		}
 	}
+	table.SetPiece(1, 1, new Pawn(Side::Black));
 }
 
