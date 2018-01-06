@@ -328,43 +328,38 @@ Pawn::Pawn(Side side)
 std::vector<Vei2> Pawn::PossibleMoves(const PieceManager& table, const Vei2 pos) const
 {
 	std::vector<Vei2> vec;
-	
-	int maxi = 2;
-	if (HasMoved())
+	for (int dx = -1; dx <= 1; dx += 2)
 	{
-		maxi = 1;
-	}
-	for (int dy = 1; dy <= maxi; dy++)
-	{
-		int left = -1;
-		int right = 1;
-		if (dy == 2)
+		Vei2 mobile = pos + Vei2(dx, sense);
+		if (table.Contains(mobile))
 		{
-			left = right = 0;
-		}
-		for (int dx = left; dx <= right; dx++)
-		{
-			Vei2 mobile = pos + Vei2(dx, dy * sense);
-			if (table.Contains(mobile))
+			const Piece* const p = table.GetPiece(mobile);
+			if (p)
 			{
-				const Piece* const p = table.GetPiece(mobile);
-				if (dx)
+				if (p->GetSide() != GetSide())
 				{
-					if (p)
-					{
-						if (p->GetSide() != GetSide())
-						{
-							vec.push_back(mobile);
-						}
-					}
+					vec.push_back(mobile);
 				}
-				else
-				{
-					if (p == nullptr)
-					{
-						vec.push_back(mobile);
-					}
-				}
+			}
+		}
+	}
+	for (int dy = 1; dy <= 2; dy++)
+	{
+		Vei2 mobile = pos + Vei2( 0, dy * sense );
+		if (table.Contains(mobile))
+		{
+			const Piece* const p = table.GetPiece(mobile);
+			if (p)
+			{
+				break;
+			}
+			else
+			{
+				vec.push_back(mobile);
+			}
+			if (HasMoved())
+			{
+				break;
 			}
 		}
 	}

@@ -4,6 +4,7 @@ Board::Board(RectI rect)
 	:
 	rect(rect)
 {
+	assert(rect.GetWidth() == rect.GetHeight());
 	cellSize = (rect.GetWidth() + 1) / 8;
 	for (int x = 0; x < 8; x++)
 	{
@@ -32,13 +33,9 @@ void Board::Draw(Graphics & gfx) const
 		}
 	}
 
-	if (table.IsKingAttacked(Side::Black))
+	if (table.IsKingAttacked(turn))
 	{
-		cellAt(table.GetKingPos(Side::Black)).Draw(gfx, Colors::Red);
-	}
-	if (table.IsKingAttacked(Side::White))
-	{
-		cellAt(table.GetKingPos(Side::White)).Draw(gfx, Colors::Red);
+		cellAt(table.GetKingPos(turn)).Draw(gfx, Colors::Red);
 	}
 
 
@@ -75,8 +72,8 @@ void Board::HandleMousePressed(Vei2 screenPos)
 
 		const int row = screenPos.y / cellSize;
 		const int col = screenPos.x / cellSize;
-		Vei2 brdPos = Vei2(col, row);
-		auto p = table.GetPiece(brdPos);
+		Vei2 clickedPos = Vei2(col, row);
+		auto p = table.GetPiece(clickedPos);
 
 		switch (state)
 		{
@@ -86,8 +83,8 @@ void Board::HandleMousePressed(Vei2 screenPos)
 			{
 				if (p->GetSide() == turn)
 				{
-					selectedPiece.validMoves = table.ValidMoves(brdPos);
-					selectedPiece.pos = brdPos;
+					selectedPiece.validMoves = table.ValidMoves(clickedPos);
+					selectedPiece.pos = clickedPos;
 					state = GameState::PieceSelected;
 				}
 			}
@@ -95,7 +92,7 @@ void Board::HandleMousePressed(Vei2 screenPos)
 		}
 		case GameState::PieceSelected:
 		{
-			if (selectedPiece.pos == brdPos)
+			if (selectedPiece.pos == clickedPos)
 			{
 				state = GameState::Waiting;
 			}
@@ -113,9 +110,9 @@ void Board::HandleMousePressed(Vei2 screenPos)
 						}
 						if (isRook && table.GetPiece(selectedPiece.pos)->IsKing())
 						{
-							if (std::find(selectedPiece.validMoves.begin(), selectedPiece.validMoves.end(), brdPos) != selectedPiece.validMoves.end())
+							if (std::find(selectedPiece.validMoves.begin(), selectedPiece.validMoves.end(), clickedPos) != selectedPiece.validMoves.end())
 							{
-								table.DoCastle(selectedPiece.pos, brdPos);
+								table.DoCastle(selectedPiece.pos, clickedPos);
 								changeTurn();
 								state = GameState::Waiting;
 							}
@@ -123,24 +120,24 @@ void Board::HandleMousePressed(Vei2 screenPos)
 						//just change selected piece normally
 						else
 						{
-							selectedPiece.validMoves = table.ValidMoves(brdPos);
-							selectedPiece.pos = brdPos;
+							selectedPiece.validMoves = table.ValidMoves(clickedPos);
+							selectedPiece.pos = clickedPos;
 						}
 					}
 					else
 					{
-						if (std::find(selectedPiece.validMoves.begin(), selectedPiece.validMoves.end(), brdPos) != selectedPiece.validMoves.end())
+						if (std::find(selectedPiece.validMoves.begin(), selectedPiece.validMoves.end(), clickedPos) != selectedPiece.validMoves.end())
 						{
-							table.Transfer(selectedPiece.pos, brdPos);
+							table.Transfer(selectedPiece.pos, clickedPos);
 							bool isPawn = false;
-							if (const Pawn* pPawn = dynamic_cast<const Pawn*>(table.GetPiece(brdPos)))
+							if (const Pawn* pPawn = dynamic_cast<const Pawn*>(table.GetPiece(clickedPos)))
 							{
 								isPawn = true;
 							}
-							if (isPawn && (brdPos.y == 0 || brdPos.y == 7))
+							if (isPawn && (clickedPos.y == 0 || clickedPos.y == 7))
 							{
 								state = GameState::PawnReplacement;
-								selectedPiece.pos = brdPos;
+								selectedPiece.pos = clickedPos;
 							}
 							else
 							{
@@ -156,19 +153,19 @@ void Board::HandleMousePressed(Vei2 screenPos)
 				}
 				else
 				{
-					if (std::find(selectedPiece.validMoves.begin(), selectedPiece.validMoves.end(), brdPos) != selectedPiece.validMoves.end())
+					if (std::find(selectedPiece.validMoves.begin(), selectedPiece.validMoves.end(), clickedPos) != selectedPiece.validMoves.end())
 					{
 
-						table.Transfer(selectedPiece.pos, brdPos);
+						table.Transfer(selectedPiece.pos, clickedPos);
 						bool isPawn = false;
-						if (const Pawn* pPawn = dynamic_cast<const Pawn*>(table.GetPiece(brdPos)))
+						if (const Pawn* pPawn = dynamic_cast<const Pawn*>(table.GetPiece(clickedPos)))
 						{
 							isPawn = true;
 						}
-						if (isPawn && (brdPos.y == 0 || brdPos.y == 7))
+						if (isPawn && (clickedPos.y == 0 || clickedPos.y == 7))
 						{
 							state = GameState::PawnReplacement;
-							selectedPiece.pos = brdPos;
+							selectedPiece.pos = clickedPos;
 						}
 						else
 						{
@@ -186,25 +183,25 @@ void Board::HandleMousePressed(Vei2 screenPos)
 		}
 		case GameState::PawnReplacement:
 		{
-			if (brdPos == Vei2(3, 3))
+			if (clickedPos == Vei2(3, 3))
 			{
 				table.SetPiece(selectedPiece.pos, new Queen(turn));
 				changeTurn();
 				state = GameState::Waiting;
 			}
-			else if (brdPos == Vei2(3, 4))
+			else if (clickedPos == Vei2(3, 4))
 			{
 				table.SetPiece(selectedPiece.pos, new Rook(turn));
 				changeTurn();
 				state = GameState::Waiting;
 			}
-			else if (brdPos == Vei2(4, 3))
+			else if (clickedPos == Vei2(4, 3))
 			{
 				table.SetPiece(selectedPiece.pos, new Knight(turn));
 				changeTurn();
 				state = GameState::Waiting;
 			}
-			else if (brdPos == Vei2(4, 4))
+			else if (clickedPos == Vei2(4, 4))
 			{
 				table.SetPiece(selectedPiece.pos, new Bishop(turn));
 				changeTurn();
@@ -213,10 +210,6 @@ void Board::HandleMousePressed(Vei2 screenPos)
 			break;
 		}
 		}
-	}
-	else
-	{
-		state = GameState::Waiting;
 	}
 }
 
@@ -280,6 +273,5 @@ void Board::InitializePieces()
 			table.SetPiece( j, 1 + i * 5 , new Pawn((Side)i));
 		}
 	}
-	table.SetPiece(1, 1, new Pawn(Side::Black));
 }
 
