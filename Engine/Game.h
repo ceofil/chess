@@ -49,7 +49,7 @@ private:
 	FrameTimer ft;
 	/********************************/
 	/*  User Variables              */
-	Font font = Font("Consolas13x24.bmp");
 	Board brd = Board(RectI(0,600,0,600));//gfx.GetRectI());
+	Sound music = Sound(L"Sounds\\daybreak.wav", 2.01f, 31.4);
 	/********************************/
 };

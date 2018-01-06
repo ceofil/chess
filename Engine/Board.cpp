@@ -135,6 +135,7 @@ void Board::HandleMousePressed(Vei2 screenPos)
 								changeTurn();
 								state = GameState::Waiting;
 							}
+							tapSound.Play(1.0f, 0.3f);
 						}
 						//just change selected piece normally
 						else
@@ -163,6 +164,7 @@ void Board::HandleMousePressed(Vei2 screenPos)
 								changeTurn();
 								state = GameState::Waiting;
 							}
+							tapSound.Play(1.0f, 0.3f);
 						}
 						else
 						{
@@ -191,6 +193,7 @@ void Board::HandleMousePressed(Vei2 screenPos)
 							changeTurn();
 							state = GameState::Waiting;
 						}
+						tapSound.Play(1.0f, 0.3f);
 					}
 					else
 					{

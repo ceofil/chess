@@ -21,11 +21,12 @@
 #include "MainWindow.h"
 #include "Game.h"
 
-Game::Game( MainWindow& wnd )
+Game::Game(MainWindow& wnd)
 	:
-	wnd( wnd ),
-	gfx( wnd )
+	wnd(wnd),
+	gfx(wnd)
 {
+	music.Play(1.0f,0.25f);
 }
 
 void Game::Go()

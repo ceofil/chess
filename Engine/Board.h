@@ -7,6 +7,8 @@
 #include <vector>
 #include "PieceManager.h"
 #include "Mouse.h"
+#include "Sound.h"
+#include <string>
 
 class Board
 {
@@ -30,6 +32,7 @@ private:
 	void changeTurn();
 
 private:
+	Sound tapSound = Sound(L"Sounds\\tap.wav");
 	const Color clr[2] = { Color(240,217,181),Color(181,136,99) };
 	const Color highlightClr = Color(20, 140, 20);
 	Surface piecesSprite = Surface("Sprites\\ChessPiecesArray320x120.bmp");
