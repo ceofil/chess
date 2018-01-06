@@ -12,6 +12,7 @@ public:
 	void DrawHighlight(Graphics& gfx, Color c) const;
 	void DrawMark(Graphics& gfx, Color c) const;
 	RectI GetRect() const;
+	Vei2 GetLeftTop() const;
 
 private:
 	RectI rect;

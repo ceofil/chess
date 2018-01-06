@@ -37,6 +37,8 @@ private:
 	const Color highlightClr = Color(20, 140, 20);
 	Surface piecesSprite = Surface("Sprites\\ChessPiecesArray320x120.bmp");
 	Surface pepeSprite = Surface("Sprites\\Pepe75x75.bmp");
+	Surface attackSprite = Surface("Sprites\\Attack75x75.bmp");
+	Surface castlingSprite = Surface("Sprites\\Castling75x75.bmp");
 	void drawPepe(Graphics& gfx) const;
 
 private:

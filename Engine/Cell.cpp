@@ -25,3 +25,8 @@ RectI Cell::GetRect() const
 {
 	return rect;
 }
+
+Vei2 Cell::GetLeftTop() const
+{
+	return Vei2(rect.left,rect.top);
+}

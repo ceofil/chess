@@ -58,7 +58,23 @@ void Board::Draw(Graphics & gfx) const
 		cellAt(selectedPiece.pos).DrawHighlight(gfx, highlightClr);
 		for (Vei2 move : selectedPiece.validMoves)
 		{
-			cellAt(move).DrawMark(gfx, highlightClr);
+			const Piece* p = table.GetPiece(move);
+			if (p)
+			{
+				Vei2 screenPos = cellAt(move).GetLeftTop();
+				if (p->GetSide() != turn)
+				{
+					gfx.DrawSprite(screenPos.x, screenPos.y, attackSprite, SpriteEffect::Chroma{ Colors::Magenta });
+				}
+				else
+				{
+					gfx.DrawSprite(screenPos.x, screenPos.y, castlingSprite, SpriteEffect::Chroma{ Colors::Magenta });
+				}
+			}
+			else
+			{
+				cellAt(move).DrawMark(gfx, highlightClr);
+			}
 		}
 		break;
 	case GameState::Waiting:
@@ -71,6 +87,7 @@ void Board::Draw(Graphics & gfx) const
 		drawPawnReplacements(turn, gfx);
 		break;
 	}
+	gfx.DrawSprite(0, 0, castlingSprite, SpriteEffect::Chroma{ Colors::Magenta });
 }
 
 void Board::Reset()
@@ -313,10 +330,8 @@ void Board::changeTurn()
 void Board::drawPepe(Graphics& gfx) const
 {
 	assert(isTurnCheckMate);
-	RectI cellRect = cellAt(table.GetKingPos(turn)).GetRect();
-	Vei2 pepeScreenPos = Vei2(cellRect.left, cellRect.bottom) + Vei2(-4, -75);
+	Vei2 pepeScreenPos = cellAt(table.GetKingPos(turn)).GetLeftTop() + Vei2(-4, 0);
 	gfx.DrawSprite(pepeScreenPos.x, pepeScreenPos.y, pepeSprite, SpriteEffect::Chroma{ Colors::Magenta });
-
 }
 
 void Board::InitializePieces()
