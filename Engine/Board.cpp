@@ -33,7 +33,7 @@ void Board::Draw(Graphics & gfx) const
 		}
 	}
 
-	if (table.IsKingAttacked(turn))
+	if (isTurnInCheck && !isTurnCheckMate)
 	{
 		cellAt(table.GetKingPos(turn)).Draw(gfx, Colors::Red);
 	}
@@ -45,23 +45,42 @@ void Board::Draw(Graphics & gfx) const
 		{
 			if (table.GetPiece({ x,y }))
 			{
-				table.GetPiece({ x,y })->Draw(pieceScreenPos(x, y), sprite, gfx);
+				table.GetPiece({ x,y })->Draw(pieceScreenPos(x, y), piecesSprite, gfx);
 			}
 		}
 	}
 
-	if (state == GameState::PieceSelected)
+
+	//overlay stuff
+	switch (state)
 	{
+	case GameState::PieceSelected:
 		cellAt(selectedPiece.pos).DrawHighlight(gfx, highlightClr);
 		for (Vei2 move : selectedPiece.validMoves)
 		{
 			cellAt(move).DrawMark(gfx, highlightClr);
 		}
-	}
-	if (state == GameState::PawnReplacement)
-	{
+		break;
+	case GameState::Waiting:
+		if (isTurnCheckMate)
+		{
+			drawPepe(gfx);
+		}
+		break;
+	case GameState::PawnReplacement:
 		drawPawnReplacements(turn, gfx);
+		break;
 	}
+}
+
+void Board::Reset()
+{
+	table = PieceManager();
+	InitializePieces();
+	isTurnInCheck = false;
+	isTurnCheckMate = false;
+	state = GameState::Waiting;
+	turn = Side::White;
 }
 
 void Board::HandleMousePressed(Vei2 screenPos)
@@ -213,6 +232,12 @@ void Board::HandleMousePressed(Vei2 screenPos)
 	}
 }
 
+
+bool Board::IsCheckMate() const
+{
+	return isTurnCheckMate;
+}
+
 const Cell & Board::cellAt(Vei2 brdPos) const
 {
 	return cellAt(brdPos.x, brdPos.y);
@@ -238,10 +263,10 @@ void Board::drawPawnReplacements(Side side, Graphics & gfx) const
 	RectI lilRect = rect.GetExpanded(-3 * cellSize);
 	gfx.DrawRect(lilRect, Color(200,200,200));
 	gfx.DrawRectStroke(lilRect, 3, Color(137, 28, 28));
-	Queen(side).Draw(pieceScreenPos(3, 3), sprite, gfx);
-	Rook(side).Draw(pieceScreenPos(3, 4), sprite, gfx);
-	Knight(side).Draw(pieceScreenPos(4, 3), sprite, gfx);
-	Bishop(side).Draw(pieceScreenPos(4, 4), sprite, gfx);
+	Queen(side).Draw(pieceScreenPos(3, 3), piecesSprite, gfx);
+	Rook(side).Draw(pieceScreenPos(3, 4), piecesSprite, gfx);
+	Knight(side).Draw(pieceScreenPos(4, 3), piecesSprite, gfx);
+	Bishop(side).Draw(pieceScreenPos(4, 4), piecesSprite, gfx);
 }
 
 void Board::changeTurn()
@@ -254,6 +279,41 @@ void Board::changeTurn()
 	{
 		turn = Side::White;
 	}
+	isTurnInCheck = table.IsKingAttacked(turn);
+	if (isTurnInCheck)
+	{
+		bool anyValidMove = false;
+		for (int x = 0; x < 8; x++)
+		{
+			for (int y = 0; y < 8; y++)
+			{
+				const Piece* p = table.GetPiece({ x,y });
+				if (p)
+				{
+					if (p->GetSide() == turn)
+					{
+						if (table.ValidMoves({ x,y }).empty() == false)
+						{
+							anyValidMove = true;
+						}
+					}
+				}
+			}
+		}
+		if (anyValidMove == false)
+		{
+			isTurnCheckMate = true;
+		}
+	}
+}
+
+void Board::drawPepe(Graphics& gfx) const
+{
+	assert(isTurnCheckMate);
+	RectI cellRect = cellAt(table.GetKingPos(turn)).GetRect();
+	Vei2 pepeScreenPos = Vei2(cellRect.left, cellRect.bottom) + Vei2(-4, -75);
+	gfx.DrawSprite(pepeScreenPos.x, pepeScreenPos.y, pepeSprite, SpriteEffect::Chroma{ Colors::Magenta });
+
 }
 
 void Board::InitializePieces()

@@ -18,7 +18,7 @@ void Cell::DrawHighlight(Graphics & gfx, Color c) const
 
 void Cell::DrawMark(Graphics & gfx, Color c) const
 {
-	gfx.DrawCircle( Vec2(rect.GetCenter()), 4.0f, c);
+	gfx.DrawCircle( Vec2(rect.GetCenter()), 6.0f, c);
 }
 
 RectI Cell::GetRect() const

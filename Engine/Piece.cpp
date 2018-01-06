@@ -10,9 +10,9 @@ Piece::Piece(Side side, RectI whiteRectSprite, RectI blackRectSprite, bool isKin
 		rect[(int)Side::Black] = blackRectSprite;
 }
 
-void Piece::Draw(Vei2 pos, const Surface& surface, Graphics & gfx) const
+void Piece::Draw(Vei2 pos, const Surface& piecesSprite, Graphics & gfx) const
 {
-	gfx.DrawSprite(pos.x, pos.y, rect[(int)side], surface, SpriteEffect::Chroma{ Colors::Magenta });
+	gfx.DrawSprite(pos.x, pos.y, rect[(int)side], piecesSprite, SpriteEffect::Chroma{ Colors::Magenta });
 }
 
 Side Piece::GetSide() const

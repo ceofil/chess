@@ -46,12 +46,26 @@ void Game::Go()
 
 void Game::UpdateModel(float dt)
 {
-	while (!wnd.mouse.IsEmpty())
+	if (brd.IsCheckMate() == false)
 	{
-		const Mouse::Event e = wnd.mouse.Read();
-		if (e.GetType() == Mouse::Event::Type::LPress)
+		while (!wnd.mouse.IsEmpty())
 		{
-			brd.HandleMousePressed(wnd.mouse.GetPos());
+			const Mouse::Event e = wnd.mouse.Read();
+			if (e.GetType() == Mouse::Event::Type::LPress)
+			{
+				brd.HandleMousePressed(wnd.mouse.GetPos());
+			}
+		}
+	}
+	else
+	{
+		if (!wnd.kbd.KeyIsEmpty())
+		{
+			const auto e = wnd.kbd.ReadKey();
+			if (e.IsPress())
+			{
+				brd.Reset();
+			}
 		}
 	}
 }
@@ -60,3 +74,4 @@ void Game::ComposeFrame()
 {
 	brd.Draw(gfx);
 }
+	

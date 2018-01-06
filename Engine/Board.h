@@ -15,6 +15,8 @@ public:
 	Board(RectI rect);
 	void Draw(Graphics& gfx) const;
 	void HandleMousePressed(Vei2 screenPos);
+	bool IsCheckMate() const;
+	void Reset();
 
 private:
 	RectI rect;
@@ -28,9 +30,11 @@ private:
 	void changeTurn();
 
 private:
-	Surface sprite = Surface("Sprites\\ChessPiecesArray320x120.bmp");
 	const Color clr[2] = { Color(240,217,181),Color(181,136,99) };
 	const Color highlightClr = Color(20, 140, 20);
+	Surface piecesSprite = Surface("Sprites\\ChessPiecesArray320x120.bmp");
+	Surface pepeSprite = Surface("Sprites\\Pepe75x75.bmp");
+	void drawPepe(Graphics& gfx) const;
 
 private:
 	PieceManager table;
@@ -51,5 +55,7 @@ private:
 	};
 	Selected selectedPiece;
 	Side turn = Side::White;
+	bool isTurnInCheck = false;
+	bool isTurnCheckMate = false;
 };
 
