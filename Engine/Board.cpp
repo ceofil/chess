@@ -87,7 +87,6 @@ void Board::Draw(Graphics & gfx) const
 		drawPawnReplacements(turn, gfx);
 		break;
 	}
-	gfx.DrawSprite(0, 0, castlingSprite, SpriteEffect::Chroma{ Colors::Magenta });
 }
 
 void Board::Reset()

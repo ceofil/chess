@@ -233,6 +233,19 @@ bool PieceManager::IsValidMove(Vei2 brdPos, Vei2 move) const
 	//using const_cast because I'm just swaping the pointers around but in the end everything is unchanged
 	Piece*& giver = const_cast<PieceManager*>(this)->pieceAt(brdPos);
 	Piece*& receiver = const_cast<PieceManager*>(this)->pieceAt(move);
+
+	if (giver && receiver)
+	{
+		if (giver->GetSide() == receiver->GetSide())
+		{
+			/*
+			Castling is already fully tested in King::PossibleMoves so it is safe to pass it as a valid move in here.
+			If the rook( which is the vei2 that is tested here ) is attacked by some otherPiece you can still castle.
+			*/
+			return true;
+		}
+	}
+
 	Piece* receiverCopy = receiver;
 
 	Side side = giver->GetSide();
